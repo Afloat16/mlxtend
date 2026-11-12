@@ -316,24 +316,25 @@ class ExhaustiveFeatureSelector(BaseEstimator, MetaEstimatorMixin):
                 " input data `X`."
             )
 
-        if self.feature_groups is None:
-            self.feature_groups = [[i] for i in range(self.n_features)]
+        self.feature_groups_ = self.feature_groups
+        if self.feature_groups_ is None:
+            self.feature_groups_ = [[i] for i in range(self.n_features)]
 
-        for fg in self.feature_groups:
+        for fg in self.feature_groups_:
             if len(fg) == 0:
                 raise ValueError(
                     "Each list in the nested lists `features_group` cannot be empty"
                 )
 
         feature_group_types = {
-            type(i) for sublist in self.feature_groups for i in sublist
+            type(i) for sublist in self.feature_groups_ for i in sublist
         }
         if len(feature_group_types) > 1:
             raise ValueError(
                 f"feature_group values must have the same type. Found {feature_group_types}."
             )
 
-        if isinstance(self.feature_groups[0][0], str):
+        if isinstance(self.feature_groups_[0][0], str):
             if self.feature_names_to_idx_mapper is None:
                 raise ValueError(
                     "The input X does not contain name of features provived in"
@@ -343,13 +344,13 @@ class ExhaustiveFeatureSelector(BaseEstimator, MetaEstimatorMixin):
                 )
 
             lst = []
-            for item in self.feature_groups:
+            for item in self.feature_groups_:
                 tmp = [self.feature_names_to_idx_mapper[name] for name in item]
                 lst.append(tmp)
 
-            self.feature_groups = lst
+            self.feature_groups_ = lst
 
-        if sorted(_merge_lists(self.feature_groups)) != sorted(
+        if sorted(_merge_lists(self.feature_groups_)) != sorted(
             list(range(self.n_features))
         ):
             raise ValueError(
@@ -362,7 +363,7 @@ class ExhaustiveFeatureSelector(BaseEstimator, MetaEstimatorMixin):
         # and replace each individual feature in `fixed_features` with their correspondig
         # group id
         features_encoded_by_groupID = np.full(self.n_features, -1, dtype=np.int64)
-        for id, group in enumerate(self.feature_groups):
+        for id, group in enumerate(self.feature_groups_):
             for idx in group:
                 features_encoded_by_groupID[idx] = id
 
@@ -370,7 +371,7 @@ class ExhaustiveFeatureSelector(BaseEstimator, MetaEstimatorMixin):
         self.fixed_features_group_set = set(lst)
 
         n_fixed_features_expected = sum(
-            len(self.feature_groups[id]) for id in self.fixed_features_group_set
+            len(self.feature_groups_[id]) for id in self.fixed_features_group_set
         )
         if n_fixed_features_expected != len(self.fixed_features_):
             raise ValueError(
@@ -379,7 +380,7 @@ class ExhaustiveFeatureSelector(BaseEstimator, MetaEstimatorMixin):
                 "is provided."
             )
 
-        n_features_ub = len(self.feature_groups)
+        n_features_ub = len(self.feature_groups_)
         n_features_lb = max(1, len(self.fixed_features_group_set))
         # check `self.max_features`
         if not isinstance(self.max_features, int) or (
@@ -403,7 +404,7 @@ class ExhaustiveFeatureSelector(BaseEstimator, MetaEstimatorMixin):
             raise AttributeError("min_features must be <= max_features")
 
         non_fixed_groups = (
-            set(range(len(self.feature_groups))) - self.fixed_features_group_set
+            set(range(len(self.feature_groups_))) - self.fixed_features_group_set
         )
         non_fixed_groups = sorted(list(non_fixed_groups))
 
@@ -456,7 +457,7 @@ class ExhaustiveFeatureSelector(BaseEstimator, MetaEstimatorMixin):
                     y,
                     list(set(c).union(self.fixed_features_group_set)),
                     groups=groups,
-                    feature_groups=self.feature_groups,
+                    feature_groups=self.feature_groups_,
                     **fit_params,
                 )
                 for c in candidates
@@ -466,7 +467,7 @@ class ExhaustiveFeatureSelector(BaseEstimator, MetaEstimatorMixin):
         try:
             for iteration, (indices, cv_scores) in work:
                 self.subsets_[iteration] = {
-                    "feature_idx": _merge_lists(self.feature_groups, indices),
+                    "feature_idx": _merge_lists(self.feature_groups_, indices),
                     "cv_scores": cv_scores,
                     "avg_score": np.mean(cv_scores),
                 }

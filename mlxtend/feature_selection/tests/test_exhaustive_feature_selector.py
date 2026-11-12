@@ -46,6 +46,52 @@ def dict_compare_utility(d1, d2, decimal=2):
         )
 
 
+@pytest.mark.parametrize("feature_groups", [None, [["a", "b"], ["c"]], [[0, 1], [2]]])
+def test_fit_preserves_feature_group_parameter(feature_groups):
+    X = pd.DataFrame(np.arange(24).reshape(8, 3), columns=["a", "b", "c"])
+    selector = EFS(
+        LinearRegression(),
+        scoring="r2",
+        feature_groups=feature_groups,
+        cv=0,
+        print_progress=False,
+    )
+    selector.fit(X, np.arange(8))
+    assert selector.get_params()["feature_groups"] is feature_groups
+
+
+def test_refit_rebuilds_default_feature_groups():
+    X = np.arange(24).reshape(8, 3)
+    y = np.arange(8)
+    selector = EFS(LinearRegression(), scoring="r2", cv=0, print_progress=False).fit(
+        X, y
+    )
+    selector.fit(X[:, :2], y)
+    assert {entry["feature_idx"] for entry in selector.subsets_.values()} == {
+        (0,),
+        (1,),
+    }
+
+
+@pytest.mark.parametrize("clone_fitted", [False, True])
+def test_refit_resolves_named_groups_for_current_columns(clone_fitted):
+    X = pd.DataFrame({"a": [0, 1] * 4, "b": [0, 0, 1, 1] * 2, "c": np.arange(8)})
+    y = X["c"].to_numpy()
+    selector = EFS(
+        LinearRegression(),
+        scoring="r2",
+        feature_groups=[["a", "b"], ["c"]],
+        cv=0,
+        print_progress=False,
+    ).fit(X, y)
+    if clone_fitted:
+        selector = clone(selector)
+    selector.fit(X[["c", "b", "a"]], y)
+    assert selector.best_feature_names_ == ("c",)
+    assert selector.best_idx_ == (0,)
+    assert selector.best_score_ == pytest.approx(1.0)
+
+
 def test_minfeatures_1():
     iris = load_iris()
     X = iris.data
