@@ -32,6 +32,9 @@ class PrincipalComponentAnalysis(_BaseModel):
     ----------
     w_ : array-like, shape=[n_features, n_components]
         Projection matrix
+    mean_ : array-like, shape=[n_features]
+        Feature means learned from the training data, used to center
+        new data before projection.
     e_vals_ : array-like, shape=[n_features]
         Eigenvalues in sorted order.
     e_vecs_ : array-like, shape=[n_features]
@@ -92,6 +95,7 @@ class PrincipalComponentAnalysis(_BaseModel):
     def _fit(self, X):
         n_samples = X.shape[0]
         n_features = X.shape[1]
+        self.mean_ = X.mean(axis=0)
         if self.n_components is None or self.n_components > n_features:
             n_components = n_features
         else:
@@ -136,7 +140,7 @@ class PrincipalComponentAnalysis(_BaseModel):
         if not hasattr(self, "w_"):
             raise AttributeError("Object as not been fitted, yet.")
 
-        transformed = X.dot(self.w_)
+        transformed = (X - self.mean_).dot(self.w_)
         if self.whitening:
             # ## Debug 1
             # norm = np.sqrt(np.diag(self.e_vals_[:self.w_.shape[1]]))

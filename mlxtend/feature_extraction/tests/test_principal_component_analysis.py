@@ -5,6 +5,7 @@
 # License: BSD 3 clause
 
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose, assert_almost_equal
 
 from mlxtend.data import iris_data
@@ -123,3 +124,38 @@ def test_pca_on_uncentered_data():
     pca2 = PCA(solver="eigen")
     pca2.fit(X)
     assert_almost_equal(pca1.e_vals_normalized_, pca2.e_vals_normalized_)
+
+
+@pytest.mark.parametrize("solver", ["svd", "eigen"])
+@pytest.mark.parametrize("whitening", [False, True])
+def test_transformed_training_data_is_centered(solver, whitening):
+    pca = PCA(n_components=2, solver=solver, whitening=whitening).fit(X)
+    transformed = pca.transform(X)
+
+    assert_allclose(transformed.mean(axis=0), 0, atol=1e-12)
+    assert_allclose(pca.transform(X.mean(axis=0, keepdims=True)), 0, atol=1e-12)
+    if whitening:
+        assert_allclose(np.cov(transformed.T), np.eye(2), atol=1e-12)
+
+
+@pytest.mark.parametrize("solver", ["svd", "eigen"])
+@pytest.mark.parametrize("whitening", [False, True])
+def test_transform_uses_fitted_center_for_new_batches(solver, whitening):
+    pca = PCA(n_components=2, solver=solver, whitening=whitening).fit(X)
+    test_data = X[:5] + np.array([3.0, -1.0, 2.0, 4.0])
+    expected = (test_data - X.mean(axis=0)).dot(pca.w_)
+    if whitening:
+        expected = expected / np.sqrt(pca.e_vals_[:2])
+
+    assert_allclose(pca.transform(test_data), expected, atol=1e-12)
+    assert_allclose(pca.transform(test_data[:1]), expected[:1], atol=1e-12)
+
+
+@pytest.mark.parametrize("solver", ["svd", "eigen"])
+def test_refitting_updates_pca_center(solver):
+    pca = PCA(n_components=2, solver=solver).fit(X)
+    shifted = X + np.array([100.0, -20.0, 40.0, 80.0])
+    pca.fit(shifted)
+
+    assert_allclose(pca.transform(shifted).mean(axis=0), 0, atol=1e-12)
+    assert_allclose(pca.mean_, shifted.mean(axis=0))
