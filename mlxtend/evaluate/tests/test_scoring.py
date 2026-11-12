@@ -5,6 +5,7 @@
 # License: BSD 3 clause
 
 import numpy as np
+import pytest
 
 from mlxtend.evaluate import scoring
 
@@ -101,6 +102,29 @@ def test_f1():
     y_pred = [1, 0, 1, 0, 0, 0, 1, 1]
     res = scoring(y_target=y_targ, y_predicted=y_pred, metric="f1")
     assert round(res, 3) == 0.667, res
+
+
+@pytest.mark.parametrize(
+    "target, predicted",
+    [
+        ([0, 1], [1, 0]),
+        ([0, 1], [0, 0]),
+        ([0, 0], [0, 1]),
+        ([1, 1], [0, 0]),
+        ([0, 0], [1, 1]),
+    ],
+)
+@pytest.mark.parametrize("positive_label", [1, 9])
+def test_f1_is_zero_when_there_are_only_false_positives_or_negatives(
+    target, predicted, positive_label
+):
+    target = np.where(np.asarray(target) == 1, positive_label, -7)
+    predicted = np.where(np.asarray(predicted) == 1, positive_label, -7)
+
+    with np.errstate(divide="raise", invalid="raise"):
+        score = scoring(target, predicted, metric="f1", positive_label=positive_label)
+
+    assert score == 0.0
 
 
 def test_matthews_corr_coef():

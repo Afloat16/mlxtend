@@ -152,9 +152,7 @@ def scoring(
         elif metric == "precision":
             res = float(tp) / (tp + fp)
         elif metric == "f1":
-            pre = float(tp) / (tp + fp)
-            rec = float(tp) / (fn + tp)
-            res = 2.0 * (pre * rec) / (pre + rec)
+            res = 2.0 * tp / (2 * tp + fp + fn)
         elif metric == "matthews_corr_coef":
             res = float(tp * tn - fp * fn)
             res = res / np.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
