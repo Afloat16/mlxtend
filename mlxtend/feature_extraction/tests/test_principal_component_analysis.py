@@ -5,7 +5,10 @@
 # License: BSD 3 clause
 
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose, assert_almost_equal
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
 
 from mlxtend.data import iris_data
 from mlxtend.feature_extraction import PrincipalComponentAnalysis as PCA
@@ -76,7 +79,7 @@ def test_loadings():
 
     pca = PCA(solver="eigen")
     pca.fit(X_std)
-    assert_almost_equal(pca.loadings_, expect, decimal=1)
+    assert_almost_equal(np.abs(pca.loadings_), np.abs(expect), decimal=1)
 
     expect = np.array(
         [
@@ -89,7 +92,7 @@ def test_loadings():
 
     pca = PCA(solver="svd")
     pca.fit(X_std)
-    assert_almost_equal(pca.loadings_, expect, decimal=1)
+    assert_almost_equal(np.abs(pca.loadings_), np.abs(expect), decimal=1)
 
 
 def test_fail_array_dimension():
@@ -123,3 +126,28 @@ def test_pca_on_uncentered_data():
     pca2 = PCA(solver="eigen")
     pca2.fit(X)
     assert_almost_equal(pca1.e_vals_normalized_, pca2.e_vals_normalized_)
+
+
+@pytest.mark.parametrize("whitening", [False, True])
+def test_eigen_solver_keeps_real_covariance_results_real(whitening):
+    pca = PCA(n_components=2, solver="eigen", whitening=whitening).fit(X_std)
+    for result in (
+        pca.e_vals_,
+        pca.e_vecs_,
+        pca.e_vals_normalized_,
+        pca.loadings_,
+        pca.transform(X_std),
+    ):
+        assert np.isrealobj(result)
+
+    assert_allclose(pca.e_vecs_.T @ pca.e_vecs_, np.eye(X.shape[1]), atol=1e-12)
+    covariance = pca.e_vecs_ @ np.diag(pca.e_vals_) @ pca.e_vecs_.T
+    assert_allclose(covariance, np.cov(X_std.T), atol=1e-12)
+
+
+def test_whitened_eigen_pca_can_feed_a_classifier():
+    pipeline = make_pipeline(
+        PCA(n_components=2, solver="eigen", whitening=True), LogisticRegression()
+    )
+    pipeline.fit(X_std, y)
+    assert pipeline.score(X_std, y) > 0.9

@@ -153,7 +153,7 @@ class PrincipalComponentAnalysis(_BaseModel):
 
     def _decomposition(self, mat, n_samples):
         if self.solver == "eigen":
-            e_vals, e_vecs = sp.linalg.eig(mat)
+            e_vals, e_vecs = sp.linalg.eigh(mat)
         elif self.solver == "svd":
             # Only SVD on mean centered data is equivalent to
             # PCA via covariance matrix (note that computing
