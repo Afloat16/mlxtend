@@ -9,6 +9,7 @@
 from time import time
 
 import numpy as np
+from scipy.special import expit
 
 from .._base import _BaseModel, _Classifier, _IterativeModel
 
@@ -126,7 +127,7 @@ class LogisticRegression(_BaseModel, _IterativeModel, _Classifier):
                 self.w_ += self.eta * (-grad_loss_wrt_w - l2_reg)
                 self.b_ += self.eta * -grad_loss_wrt_b.sum()
 
-            cost = self._logit_cost(y, self._forward(X))
+            cost = self._logit_cost(y, self._net_input(X))
             self.cost_.append(cost)
             if self.print_progress:
                 self._print_progress(iteration=(i + 1), n_iter=self.epochs, cost=cost)
@@ -156,8 +157,8 @@ class LogisticRegression(_BaseModel, _IterativeModel, _Classifier):
         """
         return self._forward(X)
 
-    def _logit_cost(self, y, y_val):
-        logit = -y.dot(np.log(y_val)) - ((1 - y).dot(np.log(1 - y_val)))
+    def _logit_cost(self, y, logits):
+        logit = np.logaddexp(0, np.where(y == 1, -logits, logits)).sum()
         if self.l2_lambda:
             l2 = self.l2_lambda / 2.0 * np.sum(self.w_**2)
             logit += l2
@@ -165,4 +166,4 @@ class LogisticRegression(_BaseModel, _IterativeModel, _Classifier):
 
     def _sigmoid_activation(self, z):
         """Compute the output of the logistic sigmoid function."""
-        return 1.0 / (1.0 + np.exp(-z))
+        return expit(z)

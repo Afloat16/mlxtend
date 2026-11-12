@@ -11,6 +11,7 @@
 from time import time
 
 import numpy as np
+from scipy.special import log_softmax
 
 from .._base import _BaseModel, _Classifier, _IterativeModel, _MultiClass
 
@@ -104,8 +105,8 @@ class SoftmaxRegression(_BaseModel, _IterativeModel, _Classifier, _MultiClass):
         return out
         # return (np.exp(z.T) / np.sum(np.exp(z), axis=1)).T
 
-    def _cross_entropy(self, output, y_target):
-        return -np.sum(np.log(output) * (y_target), axis=1)
+    def _cross_entropy(self, logits, y_target):
+        return -np.sum(log_softmax(logits, axis=1) * y_target, axis=1)
 
     def _cost(self, cross_entropy):
         L2_term = self.l2 * np.sum(self.w_**2)
@@ -164,8 +165,7 @@ class SoftmaxRegression(_BaseModel, _IterativeModel, _Classifier, _MultiClass):
                 self.b_ += self.eta * -grad_loss_wrt_b
 
             # compute cost of the whole epoch
-            y_probas = self._forward(X)
-            cross_ent = self._cross_entropy(output=y_probas, y_target=y_enc)
+            cross_ent = self._cross_entropy(logits=self._net_input(X), y_target=y_enc)
             cost = self._cost(cross_ent)
             self.cost_.append(cost)
 

@@ -9,7 +9,7 @@
 from time import time
 
 import numpy as np
-from scipy.special import expit
+from scipy.special import expit, log_softmax
 
 from .._base import _BaseModel, _Classifier, _IterativeModel, _MultiClass, _MultiLayer
 
@@ -211,7 +211,7 @@ class MultiLayerPerceptron(
                     prev_grad_w_out = grad_W_out
 
             net_1, act_1, net_out, act_out = self._feedforward(X)
-            cross_ent = self._cross_entropy(output=act_out, y_target=y_enc)
+            cross_ent = self._cross_entropy(logits=net_out, y_target=y_enc)
             cost = self._compute_cost(cross_ent)
 
             self.cost_.append(cost)
@@ -254,8 +254,8 @@ class MultiLayerPerceptron(
         return out
         # return (np.exp(z.T) / np.sum(np.exp(z), axis=1)).T
 
-    def _cross_entropy(self, output, y_target):
-        return -np.sum(np.log(output) * (y_target), axis=1)
+    def _cross_entropy(self, logits, y_target):
+        return -np.sum(log_softmax(logits, axis=1) * y_target, axis=1)
 
     def predict_proba(self, X):
         """Predict class probabilities of X from the net input.
