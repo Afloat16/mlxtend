@@ -90,6 +90,10 @@ class RBFKernelPCA(_BaseModel):
     def transform(self, X):
         """Apply the non-linear transformation on X.
 
+        Center the cross-kernel using the training kernel means and project
+        onto the component axes selected during fit. The result does not
+        depend on which other samples are transformed in the same batch.
+
         Parameters
         ----------
         X : {array-like, sparse matrix}, shape = [n_samples, n_features]
@@ -111,9 +115,13 @@ class RBFKernelPCA(_BaseModel):
             pair_dist[:, idx] = ((self.X_ - X[idx]) ** 2).sum(axis=1)
 
         K = np.exp((-1) * self.gamma * pair_dist)
-        e_vecs = self._projection_matrix(
-            eig_vecs=self.e_vecs_, n_components=self.n_components
+        K = (
+            K
+            - self._kernel_row_mean[:, np.newaxis]
+            - K.mean(axis=0)
+            + self._kernel_mean
         )
+        e_vecs = self.X_projected_
         return K.T.dot(e_vecs / self.e_vals_[: e_vecs.shape[1]])
 
     def _kernel_matrix(self, X, gamma):
@@ -126,6 +134,8 @@ class RBFKernelPCA(_BaseModel):
 
         # Computing the MxM kernel matrix.
         K = np.exp((-1) * gamma * mat_sq_dists)
+        self._kernel_row_mean = K.mean(axis=1)
+        self._kernel_mean = self._kernel_row_mean.mean()
 
         # Centering the symmetric NxN kernel matrix.
         N = K.shape[0]
