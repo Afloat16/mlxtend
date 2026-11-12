@@ -6,6 +6,7 @@
 #
 # License: BSD 3 clause
 
+from collections import Counter
 from itertools import product
 
 import numpy as np
@@ -64,8 +65,8 @@ def confusion_matrix(y_target, y_predicted, binary=False, positive_label=1):
             class_labels = np.array([class_labels[0], 1])
     n_labels = class_labels.shape[0]
     lst = []
-    z = list(zip(targ_tmp, pred_tmp))
+    counts = Counter(zip(targ_tmp, pred_tmp))
     for combi in product(class_labels, repeat=2):
-        lst.append(z.count(combi))
+        lst.append(counts[combi])
     mat = np.asarray(lst)[:, None].reshape(n_labels, n_labels)
     return mat
