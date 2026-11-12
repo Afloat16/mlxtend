@@ -5,6 +5,7 @@
 # License: BSD 3 clause
 
 import numpy as np
+import pytest
 from sklearn.base import clone
 
 from mlxtend.classifier import MultiLayerPerceptron as MLP
@@ -72,8 +73,40 @@ def test_predict_proba():
     mlp.fit(X, y)
 
     pred = mlp.predict_proba(X[0, np.newaxis])
-    exp = np.array([[0.6, 0.2, 0.2]])
+    exp = np.array([[1.0, 0.0, 0.0]])
     np.testing.assert_almost_equal(pred, exp, decimal=1)
+
+
+@pytest.mark.parametrize(
+    "logits, expected",
+    [
+        ([np.log(99), 0], [0.99, 0.01]),
+        ([np.log(98), 0, 0], [0.98, 0.01, 0.01]),
+        ([1000, 0, -1000], [1.0, 0.0, 0.0]),
+        ([0, 0, 0], [1 / 3, 1 / 3, 1 / 3]),
+    ],
+)
+def test_predict_proba_preserves_output_layer_probabilities(logits, expected):
+    features = np.array([[0.0], [1.0], [-1.0]])
+    mlp = MLP(epochs=0, hidden_layers=[2], n_classes=len(logits), random_seed=1)
+    mlp.fit(features, np.zeros(3, dtype=int))
+    mlp.w_["out"][:] = 0
+    mlp.b_["out"][:] = logits
+
+    probabilities = mlp.predict_proba(features)
+
+    np.testing.assert_allclose(probabilities, np.tile(expected, (3, 1)), atol=1e-15)
+    np.testing.assert_allclose(probabilities.sum(axis=1), 1.0)
+    np.testing.assert_array_equal(probabilities.argmax(axis=1), mlp.predict(features))
+
+
+def test_prediction_probabilities_match_training_loss():
+    mlp = MLP(epochs=20, eta=0.05, hidden_layers=[10], random_seed=1)
+    mlp.fit(X, y)
+    probabilities = mlp.predict_proba(X)
+    cross_entropy = -np.log(probabilities[np.arange(y.size), y]).mean()
+
+    np.testing.assert_allclose(cross_entropy, 2 * mlp.cost_[-1], atol=1e-12)
 
 
 def test_multiclass_sgd_acc():

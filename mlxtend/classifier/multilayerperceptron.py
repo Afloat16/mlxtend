@@ -272,8 +272,7 @@ class MultiLayerPerceptron(
 
         """
         net_1, act_1, net_out, act_out = self._feedforward(X)
-        softm = self._softmax(act_out)
-        return softm
+        return act_out
 
     def _sigmoid(self, z):
         """Compute logistic function (sigmoid).
