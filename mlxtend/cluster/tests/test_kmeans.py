@@ -5,6 +5,7 @@
 # License: BSD 3 clause
 
 import numpy as np
+import pytest
 from sklearn.base import clone
 
 from mlxtend.cluster import Kmeans
@@ -83,3 +84,26 @@ def test_continue_training():
 def test_clone():
     km = Kmeans(k=2)
     clone(km)
+
+
+@pytest.mark.parametrize(
+    "samples, n_clusters",
+    [
+        (np.ones((4, 2)), 2),
+        (np.array([[0.0], [0.0], [10.0], [10.0]]), 2),
+        (np.array([[0.0], [0.0], [10.0], [10.0]]), 3),
+    ],
+)
+def test_duplicate_initial_centroids_do_not_corrupt_clusters(samples, n_clusters):
+    km = Kmeans(k=n_clusters, max_iter=20, random_seed=0).fit(samples)
+
+    assert np.isfinite(km.centroids_).all()
+    assert km.iterations_ < km.max_iter
+    predictions = km.predict(samples)
+    np.testing.assert_allclose(km.centroids_[predictions], samples)
+    for cluster, indices in km.clusters_.items():
+        np.testing.assert_array_equal(indices, np.flatnonzero(predictions == cluster))
+
+    km.fit(samples, init_params=False)
+    assert np.isfinite(km.centroids_).all()
+    np.testing.assert_array_equal(km.predict(samples), predictions)

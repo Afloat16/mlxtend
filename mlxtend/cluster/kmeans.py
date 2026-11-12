@@ -52,6 +52,10 @@ class Kmeans(_BaseModel, _Cluster, _IterativeModel):
     iterations_ : int
         Number of iterations until convergence.
 
+    Notes
+    -----
+    If a cluster receives no samples, its previous centroid is retained.
+
     Examples
     -----------
     For usage examples, please see
@@ -103,7 +107,11 @@ class Kmeans(_BaseModel, _Cluster, _IterativeModel):
             # recompute centroids
             new_centroids = np.array(
                 [
-                    np.mean(X[self.clusters_[k]], axis=0)
+                    (
+                        np.mean(X[self.clusters_[k]], axis=0)
+                        if self.clusters_[k]
+                        else self.centroids_[k]
+                    )
                     for k in sorted(self.clusters_.keys())
                 ]
             )
