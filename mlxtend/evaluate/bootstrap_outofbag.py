@@ -60,11 +60,12 @@ class BootstrapOutOfBag(object):
         """
         rng = np.random.RandomState(self.random_seed)
         sample_idx = np.arange(X.shape[0])
-        set_idx = set(sample_idx)
 
         for _ in range(self.n_splits):
             train_idx = rng.choice(sample_idx, size=sample_idx.shape[0], replace=True)
-            test_idx = np.array(list(set_idx - set(train_idx)))
+            test_mask = np.ones(sample_idx.shape[0], dtype=bool)
+            test_mask[train_idx] = False
+            test_idx = sample_idx[test_mask]
             yield train_idx, test_idx
 
     def get_n_splits(self, X=None, y=None, groups=None):
