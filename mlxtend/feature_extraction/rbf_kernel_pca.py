@@ -36,6 +36,12 @@ class RBFKernelPCA(_BaseModel):
     X_projected_ : array-like, shape=[n_samples, n_components]
        Training samples projected along the component axes.
 
+    Notes
+    -----------
+    Kernel centering uses row and column means, requiring quadratic time in
+    the number of samples without additional sample-square centering matrices.
+    The full eigendecomposition still requires cubic time and quadratic memory.
+
     Examples
     -----------
     For usage examples, please see
@@ -127,10 +133,11 @@ class RBFKernelPCA(_BaseModel):
         # Computing the MxM kernel matrix.
         K = np.exp((-1) * gamma * mat_sq_dists)
 
-        # Centering the symmetric NxN kernel matrix.
-        N = K.shape[0]
-        one_n = np.ones((N, N)) / N
-        K = K - one_n.dot(K) - K.dot(one_n) + one_n.dot(K).dot(one_n)
+        # Center the symmetric kernel using means instead of dense products.
+        column_means = K.mean(axis=0)
+        K -= column_means
+        K -= column_means[:, np.newaxis]
+        K += column_means.mean()
         return K
 
     def _eigendecom(self, kernel_mat):
