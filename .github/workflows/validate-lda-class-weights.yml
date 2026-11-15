@@ -17,8 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: d29705465db3808cfa4e3c1c5871a1f0b011ec4a
-          fetch-depth: 3
+          ref: e6304e468872652771e55115d34347b29dba141d
+          fetch-depth: 2
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"

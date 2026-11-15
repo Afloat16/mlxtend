@@ -1,0 +1,41 @@
+# To create a release, create a tag and push it to GitHub:
+#git tag -a "v0.0.1-beta" -m "beta version testing"
+#git push --tags
+# https://dev.to/iamtekson/publish-package-to-pypi-and-release-new-version-using-github-actions-108k
+name: Publish MLxtend to PyPI
+
+on:
+  push:
+    tags:
+      - "v*"
+jobs:
+  build-n-publish:
+    name: Build and publish to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/mlxtend
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+
+      - name: Build source and wheel distributions
+        run: |
+          uv build
+          uv run --group dev python -m twine check --strict dist/*
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
