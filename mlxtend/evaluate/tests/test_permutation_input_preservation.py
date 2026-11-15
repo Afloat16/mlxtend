@@ -46,7 +46,9 @@ def test_input_storage_is_preserved(kind, feature_groups, tmp_path):
     writable = samples.flags.writeable
     targets = 2 * samples[:, 0] - samples[:, 2]
     model = LinearRegression().fit(samples, targets)
-    columns = list(range(samples.shape[1])) if feature_groups is None else feature_groups
+    columns = (
+        list(range(samples.shape[1])) if feature_groups is None else feature_groups
+    )
     expected = reference_importance(samples, targets, model, columns, 4, 7)
 
     actual = feature_importance_permutation(
