@@ -23,7 +23,8 @@ class PrincipalComponentAnalysis(_BaseModel):
         Keeps the original dimensions of the dataset if `None`.
     solver : str (default: 'svd')
         Method for performing the matrix decomposition.
-        {'eigen', 'svd'}
+        {'eigen', 'svd'}. The SVD solver uses reduced matrices when samples
+        outnumber features, avoiding a square sample-by-sample allocation.
     whitening : bool (default: False)
         Performs whitening such that the covariance matrix of
         the transformed data will be the identity matrix.
@@ -160,7 +161,13 @@ class PrincipalComponentAnalysis(_BaseModel):
             # the covariance matrix will implicitly center
             # the data)
             mat_centered = mat - mat.mean(axis=0)
-            u, s, _ = sp.linalg.svd(mat_centered.T, lapack_driver="gesvd")
+            # Keep the full feature basis for wide data, but avoid allocating
+            # an unused n_samples-by-n_samples right basis for tall data.
+            u, s, _ = sp.linalg.svd(
+                mat_centered.T,
+                full_matrices=mat.shape[1] > n_samples,
+                lapack_driver="gesvd",
+            )
             e_vecs, e_vals = u, s
             e_vals = e_vals**2 / (n_samples - 1)
             if e_vals.shape[0] < e_vecs.shape[1]:
