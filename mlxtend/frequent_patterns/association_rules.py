@@ -49,7 +49,9 @@ def association_rules(
     -----------
     df : pandas DataFrame
       pandas DataFrame of frequent itemsets
-      with columns ['support', 'itemsets']
+      with columns ['support', 'itemsets']. Item identifiers retain their
+      values in the generated antecedents and consequents, including NumPy
+      string and floating-point scalar labels.
 
     df_orig : pandas DataFrame (default: None)
       DataFrame with original input data. Only provided when null_values exist
@@ -239,7 +241,7 @@ def association_rules(
     values = df["support"].values
     frozenset_vect = np.vectorize(
         lambda x: frozenset(
-            int(item) if isinstance(item, np.generic) else item for item in x
+            int(item) if isinstance(item, np.integer) else item for item in x
         )
     )
     frequent_items_dict = dict(zip(frozenset_vect(keys), values))
