@@ -48,7 +48,8 @@ class Kmeans(_BaseModel, _Cluster, _IterativeModel):
         The cluster assignments stored as a Python dictionary;
         the dictionary keys denote the cluster indeces and the items are
         Python lists of the sample indices that were assigned to each
-        cluster.
+        cluster. Assignments match predictions from the final centroids,
+        including when fitting reaches the iteration limit.
     iterations_ : int
         Number of iterations until convergence.
 
@@ -124,6 +125,13 @@ class Kmeans(_BaseModel, _Cluster, _IterativeModel):
             self.iterations_ += 1
             if self.print_progress:
                 self._print_progress(iteration=self.iterations_, n_iter=self.max_iter)
+        else:
+            # The last centroid update can change the nearest assignments.
+            self.clusters_ = {i: [] for i in range(self.k)}
+            for sample_idx, cluster_idx in enumerate(
+                self._get_cluster_idx(X=X, centroids=self.centroids_)
+            ):
+                self.clusters_[cluster_idx].append(sample_idx)
 
         return self
 
