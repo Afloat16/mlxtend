@@ -68,7 +68,8 @@ class SequentialFeatureSelector(_BaseXComposition, MetaEstimatorMixin):
         If a callable object or function is provided, it has to be conform with
         sklearn's signature ``scorer(estimator, X, y)``; see
         https://scikit-learn.org/stable/modules/generated/sklearn.metrics.make_scorer.html
-        for more information.
+        for more information. NaN fold scores are omitted from subset means;
+        a subset with a NaN mean is not preferred over a valid candidate.
 
     cv : int (default: 5)
         Integer or iterable yielding train, test splits. If cv is an integer
@@ -819,7 +820,11 @@ class SequentialFeatureSelector(_BaseXComposition, MetaEstimatorMixin):
                 all_subsets.append(new_subset)
 
             if len(all_avg_scores) > 0:
-                best = np.argmax(all_avg_scores)
+                valid = np.flatnonzero(~np.isnan(all_avg_scores))
+                if valid.size:
+                    best = valid[np.argmax(np.asarray(all_avg_scores)[valid])]
+                else:
+                    best = 0
                 out = (all_subsets[best], all_avg_scores[best], all_cv_scores[best])
 
         return out
