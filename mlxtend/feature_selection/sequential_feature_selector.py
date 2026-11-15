@@ -43,8 +43,11 @@ class SequentialFeatureSelector(_BaseXComposition, MetaEstimatorMixin):
             If "best" is provided, the feature selector will return the
             feature subset with the best cross-validation performance.
             If "parsimonious" is provided as an argument, the smallest
-            feature subset that is within one standard error of the
-            cross-validation performance will be selected.
+            feature subset within one standard error of the best
+            cross-validation score will be selected. The threshold uses
+            the best subset's fold-score standard error and stays fixed
+            while comparing smaller subsets. With no cross-validation,
+            the standard error is zero.
 
     forward : bool (default: True)
         Forward selection if True,
@@ -696,18 +699,20 @@ class SequentialFeatureSelector(_BaseXComposition, MetaEstimatorMixin):
         k_idx = self.subsets_[best_subset]["feature_idx"]
 
         if self.is_parsimonious:
-            for k in self.subsets_:
-                if k >= best_subset:
+            best_scores = self.subsets_[best_subset]["cv_scores"]
+            if best_scores.size > 1:
+                standard_error = scipy.stats.sem(best_scores)
+            else:
+                standard_error = 0.0
+            threshold = k_score - standard_error
+            for k in sorted(self.subsets_):
+                if not self.min_k <= k < best_subset:
                     continue
-                if self.subsets_[k]["avg_score"] >= (
-                    max_score
-                    - np.std(self.subsets_[k]["cv_scores"])
-                    / self.subsets_[k]["cv_scores"].shape[0]
-                ):
-                    max_score = self.subsets_[k]["avg_score"]
+                if self.subsets_[k]["avg_score"] >= threshold:
                     best_subset = k
+                    break
 
-            k_score = max_score
+            k_score = self.subsets_[best_subset]["avg_score"]
             k_idx = self.subsets_[best_subset]["feature_idx"]
 
         for k in self.subsets_:
