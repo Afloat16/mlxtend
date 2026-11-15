@@ -17,10 +17,10 @@ from itertools import chain, combinations
 import numpy as np
 import scipy as sp
 import scipy.stats
-from joblib import Parallel, delayed
 from sklearn.base import BaseEstimator, MetaEstimatorMixin, clone
 from sklearn.metrics import get_scorer
 from sklearn.utils._tags import get_tags
+from sklearn.utils.parallel import Parallel, delayed
 
 from ..externals.name_estimators import _name_estimators
 from .utilities import _calc_score, _get_featurenames, _merge_lists, _preprocess
@@ -262,7 +262,8 @@ class ExhaustiveFeatureSelector(BaseEstimator, MetaEstimatorMixin):
 
         groups : array-like, with shape (n_samples,), optional
             Group labels for the samples used while splitting the dataset into
-            train/test set. Passed to the fit method of the cross-validator.
+            train/test set. Passed to the cross-validator, including when
+            scikit-learn metadata routing is enabled.
 
         fit_params : dict of string -> object, optional
             Parameters to pass to to the fit method of classifier.
@@ -544,7 +545,8 @@ class ExhaustiveFeatureSelector(BaseEstimator, MetaEstimatorMixin):
             Target values.
         groups : array-like, with shape (n_samples,), optional
             Group labels for the samples used while splitting the dataset into
-            train/test set. Passed to the fit method of the cross-validator.
+            train/test set. Passed to the cross-validator, including when
+            scikit-learn metadata routing is enabled.
         fit_params : dict of string -> object, optional
             Parameters to pass to to the fit method of classifier.
 

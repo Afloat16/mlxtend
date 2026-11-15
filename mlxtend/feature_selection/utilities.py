@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn import __version__ as sklearn_version
+from sklearn import get_config
 from sklearn.model_selection import cross_val_score
 
 
@@ -97,6 +98,9 @@ def _calc_score(
     param_name = "fit_params" if sklearn_version < "1.4" else "params"
 
     if selector.cv:
+        if get_config()["enable_metadata_routing"] and groups is not None:
+            fit_params = {**fit_params, "groups": groups}
+            groups = None
         scores = cross_val_score(
             selector.est_,
             X[:, IDX],

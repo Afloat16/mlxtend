@@ -15,10 +15,10 @@ from itertools import combinations
 import numpy as np
 import scipy as sp
 import scipy.stats
-from joblib import Parallel, delayed
 from sklearn.base import MetaEstimatorMixin, clone
 from sklearn.metrics import get_scorer
 from sklearn.utils._tags import get_tags
+from sklearn.utils.parallel import Parallel, delayed
 
 from ..externals.name_estimators import _name_estimators
 from ..utils.base_compostion import _BaseXComposition
@@ -327,7 +327,8 @@ class SequentialFeatureSelector(_BaseXComposition, MetaEstimatorMixin):
             argument for y.
         groups : array-like, with shape (n_samples,), optional
             Group labels for the samples used while splitting the dataset into
-            train/test set. Passed to the fit method of the cross-validator.
+            train/test set. Passed to the cross-validator, including when
+            scikit-learn metadata routing is enabled.
         fit_params : various, optional
             Additional parameters that are being passed to the estimator.
             For example, `sample_weights=weights`.
@@ -764,7 +765,8 @@ class SequentialFeatureSelector(_BaseXComposition, MetaEstimatorMixin):
 
         groups : array-like, with shape (n_samples,), optional
             Group labels for the samples used while splitting the dataset into
-            train/test set. Passed to the fit method of the cross-validator.
+            train/test set. Passed to the cross-validator, including when
+            scikit-learn metadata routing is enabled.
 
         feature_groups : list or None (default: None)
             Optional argument for treating certain features as a group.
@@ -860,7 +862,8 @@ class SequentialFeatureSelector(_BaseXComposition, MetaEstimatorMixin):
             argument for y.
         groups : array-like, with shape (n_samples,), optional
             Group labels for the samples used while splitting the dataset into
-            train/test set. Passed to the fit method of the cross-validator.
+            train/test set. Passed to the cross-validator, including when
+            scikit-learn metadata routing is enabled.
         fit_params : various, optional
             Additional parameters that are being passed to the estimator.
             For example, `sample_weights=weights`.
