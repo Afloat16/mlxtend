@@ -41,9 +41,9 @@ def test_svd_retains_full_feature_basis(shape, n_components):
 @pytest.mark.parametrize("n_components", [1, 3])
 def test_reduced_svd_preserves_whitening(n_components):
     samples = np.random.RandomState(23).normal(size=(24, 3))
-    model = PrincipalComponentAnalysis(
-        n_components=n_components, whitening=True
-    ).fit(samples)
+    model = PrincipalComponentAnalysis(n_components=n_components, whitening=True).fit(
+        samples
+    )
 
     transformed = model.transform(samples)
 
@@ -60,8 +60,7 @@ def test_reduced_svd_preserves_whitening(n_components):
 )
 @pytest.mark.parametrize("n_components", [None, 1])
 def test_tall_data_fits_without_square_sample_allocation(n_components):
-    script = textwrap.dedent(
-        f"""
+    script = textwrap.dedent(f"""
         import os
         from pathlib import Path
         import resource
@@ -86,8 +85,7 @@ def test_tall_data_fits_without_square_sample_allocation(n_components):
         assert result.shape == (20, {3 if n_components is None else n_components})
         assert np.isfinite(result).all()
         print("fit and transform succeeded with 256 MiB additional address space")
-        """
-    )
+        """)
     environment = dict(os.environ, OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1")
 
     run = subprocess.run(
