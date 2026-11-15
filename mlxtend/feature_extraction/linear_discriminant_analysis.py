@@ -24,7 +24,8 @@ class LinearDiscriminantAnalysis(_BaseModel):
     Attributes
     ----------
     w_ : array-like, shape=[n_features, n_discriminants]
-        Projection matrix
+        Projection matrix, using each class's own sample count to weight
+        its contribution to the between-class scatter.
     e_vals_ : array-like, shape=[n_features]
         Eigenvalues in sorted order.
     e_vecs_ : array-like, shape=[n_features]
@@ -135,7 +136,7 @@ class LinearDiscriminantAnalysis(_BaseModel):
         overall_mean = np.mean(X, axis=0)
         S_B = np.zeros((X.shape[1], X.shape[1]))
         for i, mean_vec in enumerate(mean_vectors):
-            n = X[y == i + 1, :].shape[0]
+            n = X[y == i, :].shape[0]
             mean_vec = mean_vec.reshape(X.shape[1], 1)
             overall_mean = overall_mean.reshape(X.shape[1], 1)
             S_B += n * (mean_vec - overall_mean).dot((mean_vec - overall_mean).T)
