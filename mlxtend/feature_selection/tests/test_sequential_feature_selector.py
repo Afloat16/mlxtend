@@ -752,7 +752,11 @@ def test_max_feature_subset_parsimonious():
     sfs = SFS(lr, k_features="parsimonious", forward=True, floating=False, cv=10)
 
     sfs = sfs.fit(X, y)
-    assert sfs.k_feature_idx_ == (5, 10, 11, 12)
+    best = max(sfs.subsets_, key=lambda k: sfs.subsets_[k]["avg_score"])
+    threshold = sfs.subsets_[best]["avg_score"] - sfs.get_metric_dict()[best]["std_err"]
+    assert sfs.subsets_[3]["avg_score"] >= threshold
+    assert all(sfs.subsets_[k]["avg_score"] < threshold for k in [1, 2])
+    assert sfs.k_feature_idx_ == (5, 10, 12)
 
 
 def test_check_pandas_dataframe_fit():

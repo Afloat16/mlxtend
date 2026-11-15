@@ -17,8 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: fe19dce690b938ac081403ea5308971405db38f8
-          fetch-depth: 2
+          ref: b74231500a2eb39cd4d5936c10fec932b10f48c4
+          fetch-depth: 3
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -59,7 +59,30 @@ jobs:
         run: uv run --group dev python -m pytest mlxtend/feature_selection/tests/test_sequential_feature_selector.py mlxtend/feature_selection/tests/test_parsimonious_standard_error.py -q
       - name: Check changed Python style
         run: |
-          uv run --group dev python -m black --target-version py311 --diff --check mlxtend/feature_selection/sequential_feature_selector.py mlxtend/feature_selection/tests/test_parsimonious_standard_error.py
-          uv run --group dev python -m isort --check-only -p mlxtend --line-length 88 --multi-line 3 --profile black mlxtend/feature_selection/sequential_feature_selector.py mlxtend/feature_selection/tests/test_parsimonious_standard_error.py
-          uv run --group dev python -m flake8 mlxtend/feature_selection/sequential_feature_selector.py mlxtend/feature_selection/tests/test_parsimonious_standard_error.py
+          uv run --group dev python -m black --target-version py311 --diff --check mlxtend/feature_selection/sequential_feature_selector.py mlxtend/feature_selection/tests/test_parsimonious_standard_error.py mlxtend/feature_selection/tests/test_sequential_feature_selector.py
+          uv run --group dev python -m isort --check-only -p mlxtend --line-length 88 --multi-line 3 --profile black mlxtend/feature_selection/sequential_feature_selector.py mlxtend/feature_selection/tests/test_parsimonious_standard_error.py mlxtend/feature_selection/tests/test_sequential_feature_selector.py
+          uv run --group dev python -m flake8 mlxtend/feature_selection/sequential_feature_selector.py mlxtend/feature_selection/tests/test_parsimonious_standard_error.py mlxtend/feature_selection/tests/test_sequential_feature_selector.py
           git diff --exit-code
+      - name: Show selected subsets and fixed thresholds
+        run: |
+          uv run --group dev python - <<'PY'
+          import numpy as np
+          from scipy.stats import sem
+          from sklearn.linear_model import LinearRegression
+          from sklearn.model_selection import KFold
+          from mlxtend.feature_selection import SequentialFeatureSelector
+
+          rng = np.random.RandomState(3)
+          X = rng.normal(size=(45, 5))
+          y = 1.4 * X[:, 0] + .3 * X[:, 1] + rng.normal(scale=1.2, size=len(X))
+          splits = list(KFold(n_splits=5, shuffle=True, random_state=11).split(X))
+          for forward in (False, True):
+              model = SequentialFeatureSelector(
+                  LinearRegression(), k_features="parsimonious", forward=forward,
+                  scoring="neg_mean_squared_error", cv=splits,
+              ).fit(X, y)
+              best = max(model.subsets_, key=lambda k: model.subsets_[k]["avg_score"])
+              threshold = model.subsets_[best]["avg_score"] - sem(model.subsets_[best]["cv_scores"])
+              print("forward", forward, "selected", model.k_feature_idx_, "best", best, "threshold", threshold)
+              print("subset scores", {k: v["avg_score"] for k, v in model.subsets_.items()})
+          PY
