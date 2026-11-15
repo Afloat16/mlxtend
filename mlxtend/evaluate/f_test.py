@@ -39,7 +39,9 @@ def ftest(y_target, *y_model_predictions):
     -----------
 
     f, p : float or None, float
-        Returns the F-value and the p-value
+        Returns the F-value and the p-value, using M - 1 numerator and
+        (M - 1) * (n - 1) denominator degrees of freedom for M models and
+        n examples.
 
     Examples
     -----------
@@ -115,7 +117,7 @@ def ftest(y_target, *y_model_predictions):
     f = mean_ssa / mean_ssab
 
     degrees_of_freedom_1 = num_models - 1
-    degrees_of_freedom_2 = degrees_of_freedom_1 * num_examples
+    degrees_of_freedom_2 = degrees_of_freedom_1 * (num_examples - 1)
 
     p_value = scipy.stats.f.sf(f, degrees_of_freedom_1, degrees_of_freedom_2)
 
