@@ -19,9 +19,7 @@ def test_reported_bounds_match_student_mean_intervals(
     rng = np.random.RandomState(17)
     samples = rng.normal(size=(60, 3))
     targets = 1.2 * samples[:, 0] + rng.normal(size=len(samples))
-    splits = list(
-        KFold(n_folds, shuffle=True, random_state=23).split(samples, targets)
-    )
+    splits = list(KFold(n_folds, shuffle=True, random_state=23).split(samples, targets))
     options = dict(
         estimator=LinearRegression(),
         scoring="neg_mean_squared_error",
@@ -50,9 +48,7 @@ def test_reported_bounds_match_student_mean_intervals(
         bound = record["ci_bound"]
 
         np.testing.assert_allclose(record["cv_scores"], scores, rtol=1e-12)
-        np.testing.assert_allclose(
-            [mean - bound, mean + bound], reference, rtol=1e-12
-        )
+        np.testing.assert_allclose([mean - bound, mean + bound], reference, rtol=1e-12)
         np.testing.assert_allclose(record["std_err"], sem(scores))
         np.testing.assert_allclose(record["std_dev"], np.std(scores))
         # get_metric_dict must not add reporting fields to fitted subsets.
