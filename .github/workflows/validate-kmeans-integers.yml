@@ -17,8 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: b3b3f0a18153dfc23b3392693c1f0f679de72dd1
-          fetch-depth: 2
+          ref: e319582813845e455ecdbf7173ae767d22ccd1f3
+          fetch-depth: 3
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -59,7 +59,7 @@ jobs:
         run: uv run --group dev python -m pytest mlxtend/cluster mlxtend/_base -q
       - name: Check changed Python style
         run: |
-          uv run --group dev python -m black --target-version py311 --check mlxtend/cluster/kmeans.py mlxtend/cluster/tests/test_kmeans_integer_distances.py
+          uv run --group dev python -m black --target-version py311 --diff --check mlxtend/cluster/kmeans.py mlxtend/cluster/tests/test_kmeans_integer_distances.py
           uv run --group dev python -m isort --check-only -p mlxtend --line-length 88 --multi-line 3 --profile black mlxtend/cluster/kmeans.py mlxtend/cluster/tests/test_kmeans_integer_distances.py
           uv run --group dev python -m flake8 mlxtend/cluster/kmeans.py mlxtend/cluster/tests/test_kmeans_integer_distances.py
           git diff --exit-code

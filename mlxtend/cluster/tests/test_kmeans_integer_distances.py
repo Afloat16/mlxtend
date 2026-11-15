@@ -46,9 +46,7 @@ def test_integer_prediction_matches_exact_nearest_centroid(dtype, span):
 
 @pytest.mark.parametrize("dtype,span", DTYPES_AND_SPANS)
 def test_integer_lloyd_step_matches_floating_input(dtype, span):
-    samples = np.array(
-        [[0], [span // 100], [span - span // 100], [span]], dtype=dtype
-    )
+    samples = np.array([[0], [span // 100], [span - span // 100], [span]], dtype=dtype)
     original = samples.copy()
     expected = Kmeans(k=2, max_iter=1, random_seed=0).fit(samples.astype(np.float64))
 
