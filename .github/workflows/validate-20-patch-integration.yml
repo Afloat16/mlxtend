@@ -1,0 +1,149 @@
+name: Integrate 20 independently validated MLxtend patches
+on:
+  push:
+    branches:
+      - validation/integrate-20-patches-20261115
+permissions:
+  contents: read
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GITHUB_ACTIONS_CI: true
+      OPENBLAS_NUM_THREADS: 1
+      OMP_NUM_THREADS: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 1aee767ef57b84a8191511a08955c583b65de382
+          fetch-depth: 1
+      - name: Apply fixed production and test diffs with three-way conflict checks
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import subprocess
+          
+          manifest = json.loads("{\"base\":\"1aee767ef57b84a8191511a08955c583b65de382\",\"excluded_paths\":[\"docs/sources/CHANGELOG.md\"],\"reason\":\"Integration verification only: independent changelog insertions are not runtime code and remain intact in each submission branch.\",\"sources\":[{\"number\":1,\"commit\":\"6dd107f2e41eba68e19454773b685d66632ba6fe\",\"branch\":\"fix/association-rule-numpy-labels-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43664851871\"},{\"number\":2,\"commit\":\"e319582813845e455ecdbf7173ae767d22ccd1f3\",\"branch\":\"fix/kmeans-integer-distances-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43665368984\"},{\"number\":3,\"commit\":\"af77d015061417682affbc3cd1556d1f38caccc6\",\"branch\":\"fix/kmeans-final-assignments-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43665438210\"},{\"number\":4,\"commit\":\"5132989d5dc8963c9a1aeb358b50e5e9ac12b39b\",\"branch\":\"fix/frequent-pattern-support-boundaries-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43666085386\"},{\"number\":5,\"commit\":\"e6304e468872652771e55115d34347b29dba141d\",\"branch\":\"fix/lda-between-class-weights-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43666870772\"},{\"number\":6,\"commit\":\"92c3d3e0168023ec1ef0e0ca881e9c2b35606163\",\"branch\":\"fix/kfold-positional-indexing-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43667124870\"},{\"number\":7,\"commit\":\"82d02b25ff470232eff19b056c45ff4651ed1c9a\",\"branch\":\"fix/ftest-residual-degrees-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43667372536\"},{\"number\":8,\"commit\":\"a45aa4a37ae27402c01050f63bb99d72dd8875cb\",\"branch\":\"fix/stacking-multioutput-features-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43667825362\"},{\"number\":9,\"commit\":\"acff09cc0ddc0eec22e6c5db3078b03be0910e59\",\"branch\":\"fix/oner-original-class-labels-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43668024784\"},{\"number\":10,\"commit\":\"b74231500a2eb39cd4d5936c10fec932b10f48c4\",\"branch\":\"fix/sfs-one-standard-error-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43668596322\"},{\"number\":11,\"commit\":\"0c658f8b938823e6f54f2d88f11145223bdbc53e\",\"branch\":\"perf/pca-svd-sample-memory-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43668982683\"},{\"number\":12,\"commit\":\"d8c53d9a4c67015e4ef26c423aa4be5ee22bf38e\",\"branch\":\"fix/vote-estimator-replacement-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43669391730\"},{\"number\":13,\"commit\":\"1b1154e5e2094c959756d5dbeb64fba20b4fa241\",\"branch\":\"fix/selector-confidence-degrees-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43669637697\"},{\"number\":14,\"commit\":\"d0249101d8e5caef4eaea53fe0b61ff65671ded1\",\"branch\":\"fix/permutation-input-preservation-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43670145324\"},{\"number\":15,\"commit\":\"66c12792d9c765dea68a7606a27c373fefaab77a\",\"branch\":\"perf/kernel-centering-memory-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43670246125\"},{\"number\":16,\"commit\":\"8e6351dc5fa7f295140d2b176701542002b2e2e7\",\"branch\":\"fix/sfs-nan-candidate-ranking-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43671094612\"},{\"number\":17,\"commit\":\"f83ea85645d634723a6764ae22f8bf1609032652\",\"branch\":\"fix/group-time-series-split-count-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43671314498\"},{\"number\":18,\"commit\":\"4cd04ba60457a227b29402b7dbfbf9a6245b5ec3\",\"branch\":\"fix/fpmax-length-maximality-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43672081892\"},{\"number\":19,\"commit\":\"8060a7b6af13125cb57dfd0d9b46bdd75ec3daa5\",\"branch\":\"fix/selector-cv-metadata-routing-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43671925488\"},{\"number\":20,\"commit\":\"2aac2afe30499cb7d3ebd25f3e047d770d8233fd\",\"branch\":\"fix/stacking-named-estimator-removal-20261115\",\"standalone_validation\":\"https://github.com/Afloat16/mlxtend/actions/runs/43672533517\"}]}")
+          base = manifest["base"]
+          output = Path(os.environ["RUNNER_TEMP"]) / "mlxtend-integration-20"
+          output.mkdir(parents=True, exist_ok=True)
+          (output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+          report = {"base": base, "excluded_paths": manifest["excluded_paths"],
+                    "applied": [], "conflicts": []}
+          
+          for source in manifest["sources"]:
+              sha = source["commit"]
+              subprocess.run(["git", "fetch", "--no-tags", "--depth=4", "origin", sha],
+                             check=True)
+              actual = subprocess.check_output(["git", "rev-parse", sha]).decode().strip()
+              assert actual == sha
+              names = subprocess.check_output(
+                  ["git", "diff", "--name-only", base, sha]
+              ).decode().splitlines()
+              assert not any(name.startswith(".github/") for name in names), names
+              paths = [name for name in names if name not in manifest["excluded_paths"]]
+              patch = subprocess.check_output(
+                  ["git", "diff", "--binary", base, sha, "--", ".",
+                   ":(exclude)docs/sources/CHANGELOG.md"]
+              )
+              assert patch
+              (output / ("patch-%02d.diff" % source["number"])).write_bytes(patch)
+              print("APPLY", source["number"], sha, paths, flush=True)
+              result = subprocess.run(["git", "apply", "--3way", "--index"],
+                                      input=patch, capture_output=True)
+              print(result.stdout.decode())
+              print(result.stderr.decode())
+              if result.returncode:
+                  conflicts = subprocess.check_output(
+                      ["git", "diff", "--name-only", "--diff-filter=U"]
+                  ).decode().splitlines()
+                  report["conflicts"].append(
+                      {"number": source["number"], "commit": sha, "paths": conflicts}
+                  )
+                  (output / "application-report.json").write_text(
+                      json.dumps(report, indent=2) + "\n"
+                  )
+                  subprocess.run(["git", "status", "--short"], check=True)
+                  subprocess.run(["git", "diff", "--cc"], check=True)
+                  raise SystemExit("Unresolved patch application; no side is auto-selected")
+              report["applied"].append(
+                  {**source, "paths": paths, "patch_sha256": hashlib.sha256(patch).hexdigest()}
+              )
+          
+          subprocess.run(["git", "diff", "--cached", "--check"], check=True)
+          assert not subprocess.check_output(
+              ["git", "diff", "--name-only", "--diff-filter=U"]
+          ).strip()
+          subprocess.run(["git", "diff", "--exit-code"], check=True)
+          report["combined_tree"] = subprocess.check_output(
+              ["git", "write-tree"]
+          ).decode().strip()
+          changed = subprocess.check_output(
+              ["git", "diff", "--cached", "--name-only"]
+          ).decode().splitlines()
+          assert "docs/sources/CHANGELOG.md" not in changed
+          report["files"] = {
+              name: hashlib.sha256(Path(name).read_bytes()).hexdigest()
+              for name in changed
+          }
+          (output / "combined.patch").write_bytes(
+              subprocess.check_output(["git", "diff", "--cached", "--binary"])
+          )
+          (output / "application-report.json").write_text(
+              json.dumps(report, indent=2) + "\n"
+          )
+          print("INTEGRATION_REPORT_JSON " + json.dumps(report), flush=True)
+          subprocess.run(["git", "diff", "--cached", "--stat"], check=True)
+          
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - name: Install frozen development environment
+        run: uv sync --frozen --group dev --python 3.11
+      - name: Show versions
+        run: uv run --group dev python -c "import sys,numpy,pandas,scipy,sklearn; print(sys.version); print('NumPy',numpy.__version__,'pandas',pandas.__version__,'SciPy',scipy.__version__,'sklearn',sklearn.__version__)"
+      - name: Run all affected packages including every new regression
+        run: uv run --group dev python -m pytest mlxtend/_base mlxtend/classifier mlxtend/cluster mlxtend/evaluate mlxtend/feature_extraction mlxtend/feature_selection mlxtend/frequent_patterns mlxtend/regressor mlxtend/utils -q --junitxml="$RUNNER_TEMP/mlxtend-integration-20/pytest.xml"
+      - name: Check all changed Python files and working-tree integrity
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import subprocess
+          
+          paths = subprocess.check_output(
+              ["git", "diff", "--cached", "--name-only", "--diff-filter=ACM"]
+          ).decode().splitlines()
+          paths = [path for path in paths if path.endswith(".py")]
+          commands = [
+              ["python", "-m", "black", "--target-version", "py311", "--diff", "--check"],
+              ["python", "-m", "isort", "--check-only", "-p", "mlxtend",
+               "--line-length", "88", "--multi-line", "3", "--profile", "black"],
+              ["python", "-m", "flake8"],
+          ]
+          results = []
+          for command in commands:
+              run = subprocess.run(["uv", "run", "--group", "dev", *command, *paths])
+              results.append({"command": command, "returncode": run.returncode})
+              if run.returncode:
+                  raise SystemExit(run.returncode)
+          subprocess.run(["git", "diff", "--exit-code"], check=True)
+          output = Path(os.environ["RUNNER_TEMP"]) / "mlxtend-integration-20"
+          (output / "style-results.json").write_text(json.dumps(results, indent=2) + "\n")
+          print("STYLE_FILES", len(paths), flush=True)
+          
+          PY
+      - name: Preserve exact integration evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlxtend-20-patch-integration
+          path: ${{ runner.temp }}/mlxtend-integration-20/
+          if-no-files-found: error

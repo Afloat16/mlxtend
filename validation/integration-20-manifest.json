@@ -1,0 +1,129 @@
+{
+  "base": "1aee767ef57b84a8191511a08955c583b65de382",
+  "excluded_paths": [
+    "docs/sources/CHANGELOG.md"
+  ],
+  "reason": "Integration verification only: independent changelog insertions are not runtime code and remain intact in each submission branch.",
+  "sources": [
+    {
+      "number": 1,
+      "commit": "6dd107f2e41eba68e19454773b685d66632ba6fe",
+      "branch": "fix/association-rule-numpy-labels-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43664851871"
+    },
+    {
+      "number": 2,
+      "commit": "e319582813845e455ecdbf7173ae767d22ccd1f3",
+      "branch": "fix/kmeans-integer-distances-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43665368984"
+    },
+    {
+      "number": 3,
+      "commit": "af77d015061417682affbc3cd1556d1f38caccc6",
+      "branch": "fix/kmeans-final-assignments-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43665438210"
+    },
+    {
+      "number": 4,
+      "commit": "5132989d5dc8963c9a1aeb358b50e5e9ac12b39b",
+      "branch": "fix/frequent-pattern-support-boundaries-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43666085386"
+    },
+    {
+      "number": 5,
+      "commit": "e6304e468872652771e55115d34347b29dba141d",
+      "branch": "fix/lda-between-class-weights-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43666870772"
+    },
+    {
+      "number": 6,
+      "commit": "92c3d3e0168023ec1ef0e0ca881e9c2b35606163",
+      "branch": "fix/kfold-positional-indexing-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43667124870"
+    },
+    {
+      "number": 7,
+      "commit": "82d02b25ff470232eff19b056c45ff4651ed1c9a",
+      "branch": "fix/ftest-residual-degrees-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43667372536"
+    },
+    {
+      "number": 8,
+      "commit": "a45aa4a37ae27402c01050f63bb99d72dd8875cb",
+      "branch": "fix/stacking-multioutput-features-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43667825362"
+    },
+    {
+      "number": 9,
+      "commit": "acff09cc0ddc0eec22e6c5db3078b03be0910e59",
+      "branch": "fix/oner-original-class-labels-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43668024784"
+    },
+    {
+      "number": 10,
+      "commit": "b74231500a2eb39cd4d5936c10fec932b10f48c4",
+      "branch": "fix/sfs-one-standard-error-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43668596322"
+    },
+    {
+      "number": 11,
+      "commit": "0c658f8b938823e6f54f2d88f11145223bdbc53e",
+      "branch": "perf/pca-svd-sample-memory-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43668982683"
+    },
+    {
+      "number": 12,
+      "commit": "d8c53d9a4c67015e4ef26c423aa4be5ee22bf38e",
+      "branch": "fix/vote-estimator-replacement-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43669391730"
+    },
+    {
+      "number": 13,
+      "commit": "1b1154e5e2094c959756d5dbeb64fba20b4fa241",
+      "branch": "fix/selector-confidence-degrees-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43669637697"
+    },
+    {
+      "number": 14,
+      "commit": "d0249101d8e5caef4eaea53fe0b61ff65671ded1",
+      "branch": "fix/permutation-input-preservation-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43670145324"
+    },
+    {
+      "number": 15,
+      "commit": "66c12792d9c765dea68a7606a27c373fefaab77a",
+      "branch": "perf/kernel-centering-memory-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43670246125"
+    },
+    {
+      "number": 16,
+      "commit": "8e6351dc5fa7f295140d2b176701542002b2e2e7",
+      "branch": "fix/sfs-nan-candidate-ranking-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43671094612"
+    },
+    {
+      "number": 17,
+      "commit": "f83ea85645d634723a6764ae22f8bf1609032652",
+      "branch": "fix/group-time-series-split-count-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43671314498"
+    },
+    {
+      "number": 18,
+      "commit": "4cd04ba60457a227b29402b7dbfbf9a6245b5ec3",
+      "branch": "fix/fpmax-length-maximality-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43672081892"
+    },
+    {
+      "number": 19,
+      "commit": "8060a7b6af13125cb57dfd0d9b46bdd75ec3daa5",
+      "branch": "fix/selector-cv-metadata-routing-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43671925488"
+    },
+    {
+      "number": 20,
+      "commit": "2aac2afe30499cb7d3ebd25f3e047d770d8233fd",
+      "branch": "fix/stacking-named-estimator-removal-20261115",
+      "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43672533517"
+    }
+  ]
+}
