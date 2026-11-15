@@ -38,15 +38,16 @@ class StackingClassifier(_BaseXComposition, _BaseStackingClassifier, Transformer
         classifiers
     use_probas : bool (default: False)
         If True, trains meta-classifier based on predicted probabilities
-        instead of class labels.
+        instead of class labels. For multiple outputs, probabilities are
+        concatenated in output order.
     drop_proba_col : string (default: None)
         Drops extra "probability" column in the feature set, because it is
         redundant:
         p(y_c) = 1 - p(y_1) + p(y_2) + ... + p(y_{c-1}).
         This can be useful for meta-classifiers that are sensitive to perfectly
         collinear features.
-        If 'last', drops last probability column.
-        If 'first', drops first probability column.
+        If 'last', drops the last probability column for each output.
+        If 'first', drops the first probability column for each output.
         Only relevant if `use_probas=True`.
     average_probas : bool (default: False)
         Averages the probabilities as meta features if `True`.
@@ -258,20 +259,16 @@ class StackingClassifier(_BaseXComposition, _BaseStackingClassifier, Transformer
 
         Returns
         -------
-        meta-features : numpy array, shape = [n_samples, n_classifiers]
-            Returns the meta-features for test data.
+        meta-features : numpy array, shape = [n_samples, n_meta_features]
+            Returns columns in classifier order, then output order. For
+            probabilities, each output contributes its retained class columns.
 
         """
         check_is_fitted(self, "clfs_")
         if self.use_probas:
-            if self.drop_proba_col == "last":
-                probas = np.asarray(
-                    [clf.predict_proba(X)[:, :-1] for clf in self.clfs_]
-                )
-            elif self.drop_proba_col == "first":
-                probas = np.asarray([clf.predict_proba(X)[:, 1:] for clf in self.clfs_])
-            else:
-                probas = np.asarray([clf.predict_proba(X) for clf in self.clfs_])
+            probas = [
+                self._format_predictions(clf.predict_proba(X)) for clf in self.clfs_
+            ]
             if self.average_probas:
                 vals = np.average(probas, axis=0)
             else:

@@ -21,6 +21,21 @@ class _BaseStackingClassifier(ClassifierMixin):
         except Exception:
             return {"estimator_type": "classifier"}
 
+    def _format_predictions(self, prediction):
+        """Return columns ordered by target, then by class for probabilities."""
+        if not self.use_probas:
+            prediction = np.asarray(prediction)
+            if prediction.ndim == 1:
+                return prediction[:, np.newaxis]
+            return prediction
+
+        probabilities = prediction if isinstance(prediction, list) else [prediction]
+        if self.drop_proba_col == "last":
+            probabilities = [proba[:, :-1] for proba in probabilities]
+        elif self.drop_proba_col == "first":
+            probabilities = [proba[:, 1:] for proba in probabilities]
+        return np.hstack(probabilities)
+
     def _do_predict(self, X, predict_fn):
         meta_features = self.predict_meta_features(X)
 
@@ -42,7 +57,7 @@ class _BaseStackingClassifier(ClassifierMixin):
 
         Returns
         ----------
-        labels : array-like, shape = [n_samples]
+        labels : array-like, shape = [n_samples] or [n_samples, n_outputs]
             Predicted class labels.
 
         """
@@ -51,7 +66,7 @@ class _BaseStackingClassifier(ClassifierMixin):
         return self._do_predict(X, self.meta_clf_.predict)
 
     def predict_proba(self, X):
-        """ Predict class probabilities for X.
+        """Predict class probabilities for X.
 
         Parameters
         ----------
@@ -71,7 +86,7 @@ class _BaseStackingClassifier(ClassifierMixin):
         return self._do_predict(X, self.meta_clf_.predict_proba)
 
     def decision_function(self, X):
-        """ Predict class confidence scores for X.
+        """Predict class confidence scores for X.
 
         Parameters
         ----------

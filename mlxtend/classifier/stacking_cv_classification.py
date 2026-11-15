@@ -44,15 +44,16 @@ class StackingCVClassifier(
         classifiers
     use_probas : bool (default: False)
         If True, trains meta-classifier based on predicted probabilities
-        instead of class labels.
+        instead of class labels. For multiple outputs, probabilities are
+        concatenated in output order.
     drop_proba_col : string (default: None)
         Drops extra "probability" column in the feature set, because it is
         redundant:
         p(y_c) = 1 - p(y_1) + p(y_2) + ... + p(y_{c-1}).
         This can be useful for meta-classifiers that are sensitive to perfectly
         collinear features.
-        If 'last', drops last probability column.
-        If 'first', drops first probability column.
+        If 'last', drops the last probability column for each output.
+        If 'first', drops the first probability column for each output.
         Only relevant if `use_probas=True`.
     cv : int, cross-validation generator or an iterable, optional (default: 2)
         Determines the cross-validation splitting strategy.
@@ -201,7 +202,7 @@ class StackingCVClassifier(
             Training vectors, where n_samples is the number of samples and
             n_features is the number of features.
 
-        y : numpy array, shape = [n_samples]
+        y : numpy array, shape = [n_samples] or [n_samples, n_outputs]
             Target values.
 
         groups : numpy array/None, shape = [n_samples]
@@ -284,12 +285,7 @@ class StackingCVClassifier(
                 method="predict_proba" if self.use_probas else "predict",
             )
 
-            if not self.use_probas:
-                prediction = prediction[:, np.newaxis]
-            elif self.drop_proba_col == "last":
-                prediction = prediction[:, :-1]
-            elif self.drop_proba_col == "first":
-                prediction = prediction[:, 1:]
+            prediction = self._format_predictions(prediction)
 
             if meta_features is None:
                 meta_features = prediction
@@ -344,8 +340,9 @@ class StackingCVClassifier(
 
         Returns
         -------
-        meta-features : numpy array, shape = [n_samples, n_classifiers]
-            Returns the meta-features for test data.
+        meta-features : numpy array, shape = [n_samples, n_meta_features]
+            Returns columns in classifier order, then output order. For
+            probabilities, each output contributes its retained class columns.
 
         """
         check_is_fitted(self, ["clfs_", "meta_clf_"])
@@ -354,16 +351,11 @@ class StackingCVClassifier(
 
         for model in self.clfs_:
             if not self.use_probas:
-                prediction = model.predict(X)[:, np.newaxis]
+                prediction = model.predict(X)
             else:
-                if self.drop_proba_col == "last":
-                    prediction = model.predict_proba(X)[:, :-1]
-                elif self.drop_proba_col == "first":
-                    prediction = model.predict_proba(X)[:, 1:]
-                else:
-                    prediction = model.predict_proba(X)
+                prediction = model.predict_proba(X)
 
-            per_model_preds.append(prediction)
+            per_model_preds.append(self._format_predictions(prediction))
 
         return np.hstack(per_model_preds)
 
