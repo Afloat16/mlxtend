@@ -206,7 +206,9 @@ class OneRClassifier(BaseEstimator, ClassifierMixin):
 
         rules = self.prediction_dict_["rules (value: class)"]
 
-        y_pred = np.full(X.shape[0], self.class_labels_[0], dtype=self.class_labels_.dtype)
+        y_pred = np.full(
+            X.shape[0], self.class_labels_[0], dtype=self.class_labels_.dtype
+        )
 
         # Set up labels for those class labels in the
         # dataset for which no rule exists. We use the
@@ -215,7 +217,9 @@ class OneRClassifier(BaseEstimator, ClassifierMixin):
         for feature_value in rules:
             class_label = rules[feature_value]
             rule_labels.add(class_label)
-        other_labels = [label for label in self.class_labels_ if label not in rule_labels]
+        other_labels = [
+            label for label in self.class_labels_ if label not in rule_labels
+        ]
         if other_labels:
             y_pred[:] = other_labels[0]
         # If every class has a rule, use the first fitted class as the fallback.
