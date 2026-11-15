@@ -45,9 +45,7 @@ def test_lda_uses_matching_class_sizes(relabeling, n_discriminants):
     np.testing.assert_allclose(model.e_vals_, expected_values, rtol=1e-12)
     directions = expected_vectors[:, :n_discriminants]
     alignment = np.sign(np.sum(model.w_ * directions, axis=0))
-    np.testing.assert_allclose(
-        model.w_ * alignment, directions, rtol=1e-12, atol=1e-12
-    )
+    np.testing.assert_allclose(model.w_ * alignment, directions, rtol=1e-12, atol=1e-12)
     np.testing.assert_allclose(
         model.transform(samples) * alignment,
         samples @ directions,
