@@ -111,9 +111,13 @@ class RBFKernelPCA(_BaseModel):
             pair_dist[:, idx] = ((self.X_ - X[idx]) ** 2).sum(axis=1)
 
         K = np.exp((-1) * self.gamma * pair_dist)
-        e_vecs = self._projection_matrix(
-            eig_vecs=self.e_vecs_, n_components=self.n_components
+        K = (
+            K
+            - self._kernel_row_means_[:, np.newaxis]
+            - K.mean(axis=0)
+            + self._kernel_mean_
         )
+        e_vecs = self.X_projected_
         return K.T.dot(e_vecs / self.e_vals_[: e_vecs.shape[1]])
 
     def _kernel_matrix(self, X, gamma):
@@ -126,6 +130,8 @@ class RBFKernelPCA(_BaseModel):
 
         # Computing the MxM kernel matrix.
         K = np.exp((-1) * gamma * mat_sq_dists)
+        self._kernel_row_means_ = K.mean(axis=1)
+        self._kernel_mean_ = self._kernel_row_means_.mean()
 
         # Centering the symmetric NxN kernel matrix.
         N = K.shape[0]
