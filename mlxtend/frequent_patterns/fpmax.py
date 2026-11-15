@@ -54,8 +54,9 @@ def fpmax(
 
     max_len : int (default: None)
       Given the set of all maximal itemsets,
-      return those that are less than `max_len`. If `None` (default) all
-      possible itemsets lengths are evaluated.
+      return those whose length is at most `max_len`. Maximality is still
+      determined with respect to all frequent supersets, including longer
+      ones. If `None` (default), all possible itemset lengths are evaluated.
 
     verbose : int (default: 0)
       Shows the stages of conditional tree generation.
@@ -63,7 +64,7 @@ def fpmax(
     Returns
     -----------
     pandas DataFrame with columns ['support', 'itemsets'] of all maximal
-      itemsets that are >= `min_support` and < than `max_len`
+      itemsets that are >= `min_support` and have length <= `max_len`
       (if `max_len` is not None).
       Each itemset in the 'itemsets' column is of type `frozenset`,
       which is a Python built-in type that behaves similarly to
@@ -123,6 +124,16 @@ def fpmax_step(tree, minsup, mfit, colnames, max_len, verbose):
                 if len(items) > 0:
                     support = min([tree.nodes[i][0].count for i in items])
                 yield support, largest_set
+    elif max_len is not None and len(tree.cond_items) == max_len:
+        # Every frequent one-item extension proves its shorter subsets are
+        # not maximal, even though the extension itself cannot be returned.
+        # Retain this evidence without building deeper conditional trees.
+        for item in items:
+            extension = sorted(
+                tree.cond_items + [item], key=mfit.rank.get, reverse=True
+            )
+            mfit.cache = extension
+            mfit.insert_itemset(extension)
 
     if verbose:
         tree.print_status(count, colnames)
