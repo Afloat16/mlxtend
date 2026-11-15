@@ -3,8 +3,6 @@
 #
 # License: BSD 3 clause
 
-import math
-
 import numpy as np
 import pandas as pd
 
@@ -46,6 +44,7 @@ def hmine(
       A float between 0 and 1 for minimum support of the itemsets returned.
       The support is computed as the fraction
       transactions_where_item(s)_occur / total_transactions.
+      Itemsets at this computed support boundary are included.
 
     use_colnames : bool (default: False)
       If true, uses the DataFrames' column names in the returned DataFrame
@@ -84,7 +83,7 @@ def hmine(
             "Got %s." % min_support
         )
     # Calculate the minimum support based on the number of transactions (absolute support)
-    minsup = math.ceil(min_support * len(df))
+    minsup = fpc._minimum_support_count(min_support, len(df))
 
     is_sparse = False
     if hasattr(df, "sparse"):

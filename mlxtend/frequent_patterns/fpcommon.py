@@ -1,4 +1,5 @@
 import collections
+import math
 import warnings
 
 import numpy as np
@@ -6,6 +7,20 @@ import pandas as pd
 from pandas import __version__ as pandas_version
 
 warnings.simplefilter("always", DeprecationWarning)
+
+
+def _minimum_support_count(min_support, num_itemsets):
+    """Match the count threshold to the computed fractional support."""
+    count = math.ceil(min_support * num_itemsets)
+    if not num_itemsets:
+        return count
+    # Scaling the threshold can round across an integer in either direction.
+    # Use the same floating division as the reported support to correct it.
+    while count > 0 and np.float64(count - 1) / num_itemsets >= min_support:
+        count -= 1
+    while np.float64(count) / num_itemsets < min_support:
+        count += 1
+    return count
 
 
 def setup_fptree(df, min_support, null_values=False):

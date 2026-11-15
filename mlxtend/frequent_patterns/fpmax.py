@@ -4,7 +4,6 @@
 # License: BSD 3 clause
 
 import collections
-import math
 
 from ..frequent_patterns import fpcommon as fpc
 
@@ -44,6 +43,7 @@ def fpmax(
       A float between 0 and 1 for minimum support of the itemsets returned.
       The support is computed as the fraction
       transactions_where_item(s)_occur / total_transactions.
+      Itemsets at this computed support boundary are included.
 
     null_values : bool (default: False)
       In case there are null values as NaNs in the original input data
@@ -92,7 +92,7 @@ def fpmax(
 
     tree, disabled, rank = fpc.setup_fptree(df, min_support, null_values=null_values)
 
-    minsup = math.ceil(min_support * len(df))  # min support as count
+    minsup = fpc._minimum_support_count(min_support, len(df))
     generator = fpmax_step(tree, minsup, MFITree(rank), colname_map, max_len, verbose)
 
     return fpc.generate_itemsets(
