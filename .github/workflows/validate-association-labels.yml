@@ -1,0 +1,65 @@
+name: Validate association-rule NumPy labels
+
+on:
+  push:
+    branches:
+      - validation/association-rule-labels-20261115
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_ACTIONS_CI: true
+      OPENBLAS_NUM_THREADS: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 6dd107f2e41eba68e19454773b685d66632ba6fe
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - name: Install frozen development environment
+        run: uv sync --frozen --group dev --python 3.11
+      - name: Show source and versions
+        run: |
+          git rev-parse HEAD
+          uv run --group dev python -c "import sys,numpy,pandas,scipy,sklearn; print(sys.version); print('NumPy',numpy.__version__,'pandas',pandas.__version__,'SciPy',scipy.__version__,'sklearn',sklearn.__version__)"
+      - name: Verify the same regressions fail on unchanged production source
+        run: |
+          uv run --group dev python - <<'PY'
+          from pathlib import Path
+          import subprocess
+
+          path = Path("mlxtend/frequent_patterns/association_rules.py")
+          fixed = path.read_bytes()
+          base = subprocess.check_output(
+              ["git", "show", "1aee767ef57b84a8191511a08955c583b65de382:" + str(path)]
+          )
+          try:
+              path.write_bytes(base)
+              run = subprocess.run(
+                  ["python", "-m", "pytest",
+                   "mlxtend/frequent_patterns/tests/test_association_rule_labels.py",
+                   "-q", "--tb=short"],
+                  capture_output=True, text=True
+              )
+              print(run.stdout)
+              print(run.stderr)
+              if run.returncode != 1 or "ERROR" in run.stdout:
+                  raise SystemExit("Expected failing assertions without collection errors")
+          finally:
+              path.write_bytes(fixed)
+          PY
+      - name: Run new and existing frequent-pattern tests
+        run: uv run --group dev python -m pytest mlxtend/frequent_patterns -q
+      - name: Check changed Python style
+        run: |
+          uv run --group dev python -m black --check mlxtend/frequent_patterns/association_rules.py mlxtend/frequent_patterns/tests/test_association_rule_labels.py
+          uv run --group dev python -m isort --check-only -p mlxtend --line-length 88 --multi-line 3 --profile black mlxtend/frequent_patterns/association_rules.py mlxtend/frequent_patterns/tests/test_association_rule_labels.py
+          uv run --group dev python -m flake8 mlxtend/frequent_patterns/association_rules.py mlxtend/frequent_patterns/tests/test_association_rule_labels.py
+          git diff --exit-code
