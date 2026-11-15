@@ -11,20 +11,23 @@
 import warnings
 
 import numpy as np
-from sklearn.base import BaseEstimator, ClassifierMixin, TransformerMixin, clone
+from sklearn.base import ClassifierMixin, TransformerMixin, clone
 from sklearn.exceptions import NotFittedError
 from sklearn.preprocessing import LabelEncoder
 
 from ..externals.name_estimators import _name_estimators
+from ..utils.base_compostion import _BaseXComposition
 
 
-class EnsembleVoteClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
+class EnsembleVoteClassifier(_BaseXComposition, ClassifierMixin, TransformerMixin):
     """Soft Voting/Majority Rule classifier for scikit-learn estimators.
 
     Parameters
     ----------
     clfs : array-like, shape = [n_classifiers]
-        A list of classifiers.
+        A list of classifiers. Classifiers may be replaced through their
+        names from `get_params`, or together through `clfs`. Nested parameters
+        then refer to the current classifiers, including replacements.
         Invoking the `fit` method on the `VotingClassifier` will fit clones
         of those original classifiers
         be stored in the class attribute
@@ -117,7 +120,6 @@ class EnsembleVoteClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
         fit_base_estimators=True,
     ):
         self.clfs = clfs
-        self.named_clfs = {key: value for key, value in _name_estimators(clfs)}
         self.voting = voting
         self.weights = weights
         self.verbose = verbose
@@ -283,21 +285,27 @@ class EnsembleVoteClassifier(BaseEstimator, ClassifierMixin, TransformerMixin):
         else:
             return self._predict(X)
 
+    @property
+    def _named_clfs(self):
+        return _name_estimators(self.clfs)
+
+    @property
+    def named_clfs(self):
+        """Return names mapped to the current input classifiers."""
+        return dict(self._named_clfs)
+
     def get_params(self, deep=True):
         """Return estimator parameter names for GridSearch support."""
-        if not deep:
-            return super(EnsembleVoteClassifier, self).get_params(deep=False)
-        else:
-            out = self.named_clfs.copy()
-            for name, step in self.named_clfs.items():
-                for key, value in step.get_params(deep=True).items():
-                    out["%s__%s" % (name, key)] = value
+        return self._get_params("_named_clfs", deep=deep)
 
-            for key, value in (
-                super(EnsembleVoteClassifier, self).get_params(deep=False).items()
-            ):
-                out["%s" % key] = value
-            return out
+    def set_params(self, **params):
+        """Set parameters, replacing classifiers before their nested parameters.
+
+        Valid parameter keys can be listed with ``get_params()``.
+        Classifier names are derived from the current ``clfs`` list.
+        """
+        self._set_params("clfs", "_named_clfs", **params)
+        return self
 
     def _predict(self, X):
         """Collect results from clf.predict calls."""
