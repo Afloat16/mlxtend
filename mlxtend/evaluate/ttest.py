@@ -9,6 +9,7 @@ import numpy as np
 from scipy import stats
 from sklearn.metrics import get_scorer
 from sklearn.model_selection import KFold, train_test_split
+from sklearn.utils import _safe_indexing, indexable
 from sklearn.utils._tags import get_tags
 
 
@@ -152,10 +153,11 @@ def paired_ttest_kfold_cv(
 
     X : {array-like, sparse matrix}, shape = [n_samples, n_features]
         Training vectors, where n_samples is the number of samples and
-        n_features is the number of features.
+        n_features is the number of features. Samples are selected by position,
+        including when X is a pandas DataFrame.
 
     y : array-like, shape = [n_samples]
-        Target values.
+        Target values, aligned with X by row position rather than pandas labels.
 
     cv : int (default: 10)
         Number of splits and iteration for the
@@ -201,6 +203,8 @@ def paired_ttest_kfold_cv(
 
     """
 
+    X, y = indexable(X, y)
+
     if not shuffle:
         kf = KFold(n_splits=cv, shuffle=shuffle)
     else:
@@ -222,8 +226,8 @@ def paired_ttest_kfold_cv(
     score_diff = []
 
     for train_index, test_index in kf.split(X):
-        X_train, X_test = X[train_index], X[test_index]
-        y_train, y_test = y[train_index], y[test_index]
+        X_train, X_test = _safe_indexing(X, train_index), _safe_indexing(X, test_index)
+        y_train, y_test = _safe_indexing(y, train_index), _safe_indexing(y, test_index)
 
         estimator1.fit(X_train, y_train)
         estimator2.fit(X_train, y_train)
