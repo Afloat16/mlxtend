@@ -14,26 +14,24 @@ class _BaseXComposition(_BaseComposition):
         if attr in params:
             setattr(self, attr, params.pop(attr))
 
-        # 2. single estimator replacement
+        # 2. resolve named replacements before removing any estimators
         items = getattr(self, named_attr)
-        names = []
         if items:
-            names, estimators = zip(*items)
-            estimators = list(estimators)
-        for name in list(params.keys()):
-            if "__" not in name and name in names:
-                # replace single estimator and re-build the
-                # root estimators list
-                for i, est_name in enumerate(names):
-                    if est_name == name:
-                        new_val = params.pop(name)
-                        if new_val is None:
-                            del estimators[i]
-                        else:
-                            estimators[i] = new_val
-                        break
-                # replace the root estimators
-                setattr(self, attr, estimators)
+            names = {name for name, _ in items}
+            replacements = {
+                name: params.pop(name)
+                for name in list(params)
+                if "__" not in name and name in names
+            }
+            if replacements:
+                estimators = [
+                    replacements.get(name, estimator) for name, estimator in items
+                ]
+                setattr(
+                    self,
+                    attr,
+                    [estimator for estimator in estimators if estimator is not None],
+                )
 
         # 3. estimator parameters and other initialisation arguments
         super(_BaseXComposition, self).set_params(**params)
