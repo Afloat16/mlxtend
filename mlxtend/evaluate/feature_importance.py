@@ -19,7 +19,9 @@ def feature_importance_permutation(
 
     X : NumPy array, shape = [n_samples, n_features]
         Dataset, where n_samples is the number of samples and
-        n_features is the number of features.
+        n_features is the number of features. Permutations use a writable
+        copy; the supplied array is not modified, including when a prediction
+        or scoring callback raises an exception. Read-only arrays are accepted.
 
     y : NumPy array, shape = [n_samples]
         Target values.
@@ -96,6 +98,7 @@ def feature_importance_permutation(
 
     rng = np.random.RandomState(seed)
 
+    X = X.copy()
     baseline = score_func(y, predict_method(X))
 
     if feature_groups is None:
