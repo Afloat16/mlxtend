@@ -81,6 +81,7 @@ def test_callback_failure_does_not_leave_permuted_input(
     owner_before = owner.copy()
     targets = 2 * samples[:, 0] - samples[:, 2]
     model = LinearRegression().fit(samples, targets)
+    predictions_before = model.predict(samples)
     failure = RuntimeError("callback stopped")
     calls = {"predict": 0, "metric": 0}
 
@@ -112,4 +113,4 @@ def test_callback_failure_does_not_leave_permuted_input(
     assert exc.value is failure
     np.testing.assert_array_equal(samples, before)
     np.testing.assert_array_equal(owner, owner_before)
-    np.testing.assert_array_equal(model.predict(samples), model.predict(before))
+    np.testing.assert_array_equal(model.predict(samples), predictions_before)
