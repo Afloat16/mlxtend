@@ -5,6 +5,7 @@
 #
 # License: BSD 3 clause
 
+from copy import copy
 from itertools import accumulate, chain, groupby, islice
 
 import matplotlib.pyplot as plt
@@ -155,15 +156,29 @@ class GroupTimeSeriesSplit:
             Always ignored, exists for compatibility.
         y : object
             Always ignored, exists for compatibility.
-        groups : object
-            Always ignored, exists for compatibility.
+        groups : array-like (default=None)
+            Group labels used to infer the number of splits when it has not
+            been specified or calculated by a previous call to `split`.
 
         Returns
         -------
         n_splits : int
             Returns the number of splitting iterations in the cross-validator.
+            Inferring this value does not modify the splitter.
         """
-        return self.n_splits
+        if self.n_splits is not None:
+            return self.n_splits
+        if groups is None:
+            raise ValueError("The groups should be specified")
+
+        group_names = [name for name, _ in groupby(groups)]
+        if len(group_names) != len(set(group_names)):
+            raise ValueError("The groups should be consecutive")
+
+        splitter = copy(self)
+        splitter._n_groups = len(group_names)
+        splitter._calculate_split_params()
+        return splitter.n_splits
 
     def _calculate_split_params(self):
         train_size = self.train_size
