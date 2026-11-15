@@ -1,0 +1,65 @@
+name: Validate simultaneous named estimator removals in stacking
+
+on:
+  push:
+    branches:
+      - validation/stacking-named-estimator-removal-20261115
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_ACTIONS_CI: true
+      OPENBLAS_NUM_THREADS: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 2aac2afe30499cb7d3ebd25f3e047d770d8233fd
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - name: Install frozen development environment
+        run: uv sync --frozen --group dev --python 3.11
+      - name: Show source and versions
+        run: |
+          git rev-parse HEAD
+          uv run --group dev python -c "import sys,numpy,pandas,scipy,sklearn; print(sys.version); print('NumPy',numpy.__version__,'pandas',pandas.__version__,'SciPy',scipy.__version__,'sklearn',sklearn.__version__)"
+      - name: Verify the same regressions fail on unchanged production source
+        run: |
+          uv run --group dev python - <<'PY'
+          from pathlib import Path
+          import subprocess
+
+          path = Path("mlxtend/utils/base_compostion.py")
+          fixed = path.read_bytes()
+          base = subprocess.check_output(
+              ["git", "show", "1aee767ef57b84a8191511a08955c583b65de382:" + str(path)]
+          )
+          try:
+              path.write_bytes(base)
+              run = subprocess.run(
+                  ["python", "-m", "pytest",
+                   "mlxtend/utils/tests/test_estimator_removal.py",
+                   "-q", "--tb=short"],
+                  capture_output=True, text=True
+              )
+              print(run.stdout)
+              print(run.stderr)
+              if run.returncode != 1 or "ERROR" in run.stdout:
+                  raise SystemExit("Expected failing assertions without collection errors")
+          finally:
+              path.write_bytes(fixed)
+          PY
+      - name: Run stacking and shared-composition tests
+        run: uv run --group dev python -m pytest mlxtend/classifier/tests/test_stacking_classifier.py mlxtend/classifier/tests/test_stacking_cv_classifier.py mlxtend/regressor/tests/test_stacking_regression.py mlxtend/regressor/tests/test_stacking_cv_regression.py mlxtend/feature_selection/tests/test_sequential_feature_selector.py mlxtend/utils/tests/test_estimator_removal.py -q
+      - name: Check changed Python style
+        run: |
+          uv run --group dev python -m black --target-version py311 --diff --check mlxtend/utils/base_compostion.py mlxtend/utils/tests/test_estimator_removal.py
+          uv run --group dev python -m isort --check-only -p mlxtend --line-length 88 --multi-line 3 --profile black mlxtend/utils/base_compostion.py mlxtend/utils/tests/test_estimator_removal.py
+          uv run --group dev python -m flake8 mlxtend/utils/base_compostion.py mlxtend/utils/tests/test_estimator_removal.py
+          git diff --exit-code
