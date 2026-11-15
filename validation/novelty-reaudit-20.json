@@ -1,0 +1,1817 @@
+{
+  "repository": "rasbt/mlxtend",
+  "audited_at_utc": "2026-11-15 04:23:03 UTC",
+  "scope": "Targeted novelty re-audit of the 20 fixed source SHAs, including all-state upstream PR file indexes and pre-existing fork heads.",
+  "base_sha": "1aee767ef57b84a8191511a08955c583b65de382",
+  "method": {
+    "enumeration": "REST /repos/rasbt/mlxtend/pulls?state=all&per_page=100, all eight pages through the empty page; not the issue-search wrapper.",
+    "counts": {
+      "total": 684,
+      "open": 100,
+      "closed_unmerged": 41,
+      "merged": 543
+    },
+    "file_index": "All 684 PR /files responses fully paginated. Large-PR details were checked against changed_files; no missing pages or omitted patches for targeted production paths.",
+    "indexed_changed_files": 7119,
+    "review": "Mapped each exact production diff to all-state files, inspected relevant function changes, checked topic/title/body matches and earlier renamed/reorganized paths. Textual added-line overlap was only a lead, not the novelty decision.",
+    "related_production_prs": 206,
+    "cross_path_review": [
+      159,
+      445,
+      834,
+      861
+    ],
+    "old_fork_review": "Refreshed all 35 non-20261115 heads: the 34 pre-existing heads plus the earlier validation/upstream-master reference. Compared each fixed head SHA with the campaign base and inspected every overlap with campaign production files.",
+    "limitations": "The conclusion is no equivalent fix found in the retrieved public PR/fork history. It is not a claim about deleted or private branches, unpublished work outside these repositories, or future submissions."
+  },
+  "result": "No equivalent duplicate found; no delivered item removed in this re-audit.",
+  "items": [
+    {
+      "number": 1,
+      "title": "Preserve NumPy item identifiers in association rules",
+      "source_sha": "6dd107f2e41eba68e19454773b685d66632ba6fe",
+      "branch": "fix/association-rule-numpy-labels-20261115",
+      "paths": [
+        "mlxtend/frequent_patterns/association_rules.py"
+      ],
+      "related_all_state_prs": [
+        163,
+        166,
+        241,
+        245,
+        246,
+        247,
+        318,
+        341,
+        363,
+        371,
+        394,
+        421,
+        493,
+        653,
+        764,
+        834,
+        843,
+        876,
+        914,
+        930,
+        992,
+        1021,
+        1075,
+        1099,
+        1106,
+        1121,
+        1137,
+        1141,
+        1142,
+        1157,
+        1158,
+        1182,
+        1197,
+        1250
+      ],
+      "related_unmerged_prs": [
+        166,
+        834,
+        1141,
+        1142,
+        1158,
+        1182,
+        1197,
+        1250
+      ],
+      "focused_comparisons": [
+        {
+          "number": 1137,
+          "url": "https://github.com/rasbt/mlxtend/pull/1137"
+        },
+        {
+          "number": 1141,
+          "url": "https://github.com/rasbt/mlxtend/pull/1141"
+        },
+        {
+          "number": 1142,
+          "url": "https://github.com/rasbt/mlxtend/pull/1142"
+        },
+        {
+          "number": 1157,
+          "url": "https://github.com/rasbt/mlxtend/pull/1157"
+        },
+        {
+          "number": 1158,
+          "url": "https://github.com/rasbt/mlxtend/pull/1158"
+        },
+        {
+          "number": 1182,
+          "url": "https://github.com/rasbt/mlxtend/pull/1182"
+        },
+        {
+          "number": 1250,
+          "url": "https://github.com/rasbt/mlxtend/pull/1250"
+        }
+      ],
+      "decision": "No equivalent change found. #1137 introduced the broad np.generic-to-int conversion. #1141/#1142 change missing-value/num_itemsets handling, #1157/#1158 change formatting, #1182 adds a metric, and #1250 suppresses a metric warning; none restrict conversion to NumPy integers. The earlier association/ path (#159) also contains no equivalent label-preservation fix."
+    },
+    {
+      "number": 2,
+      "title": "Avoid integer overflow in Kmeans distance calculations",
+      "source_sha": "e319582813845e455ecdbf7173ae767d22ccd1f3",
+      "branch": "fix/kmeans-integer-distances-20261115",
+      "paths": [
+        "mlxtend/cluster/kmeans.py"
+      ],
+      "related_all_state_prs": [
+        48,
+        49,
+        50,
+        67,
+        142,
+        256,
+        318,
+        371,
+        493,
+        653,
+        764,
+        876,
+        914,
+        930,
+        1018,
+        1021,
+        1075,
+        1137,
+        1278
+      ],
+      "related_unmerged_prs": [
+        1278
+      ],
+      "focused_comparisons": [
+        {
+          "number": 48,
+          "url": "https://github.com/rasbt/mlxtend/pull/48"
+        },
+        {
+          "number": 49,
+          "url": "https://github.com/rasbt/mlxtend/pull/49"
+        },
+        {
+          "number": 50,
+          "url": "https://github.com/rasbt/mlxtend/pull/50"
+        },
+        {
+          "number": 67,
+          "url": "https://github.com/rasbt/mlxtend/pull/67"
+        },
+        {
+          "number": 1278,
+          "url": "https://github.com/rasbt/mlxtend/pull/1278"
+        }
+      ],
+      "decision": "No equivalent change found. #49 introduced subtraction/squaring in the original integer dtype; later changes do not promote operands before distance calculation. The old fork empty-cluster fix changes centroid recomputation only."
+    },
+    {
+      "number": 3,
+      "title": "Keep Kmeans memberships consistent with the final centroids",
+      "source_sha": "af77d015061417682affbc3cd1556d1f38caccc6",
+      "branch": "fix/kmeans-final-assignments-20261115",
+      "paths": [
+        "mlxtend/cluster/kmeans.py"
+      ],
+      "related_all_state_prs": [
+        48,
+        49,
+        50,
+        67,
+        142,
+        256,
+        318,
+        371,
+        493,
+        653,
+        764,
+        876,
+        914,
+        930,
+        1018,
+        1021,
+        1075,
+        1137,
+        1278
+      ],
+      "related_unmerged_prs": [
+        1278
+      ],
+      "focused_comparisons": [
+        {
+          "number": 48,
+          "url": "https://github.com/rasbt/mlxtend/pull/48"
+        },
+        {
+          "number": 50,
+          "url": "https://github.com/rasbt/mlxtend/pull/50"
+        },
+        {
+          "number": 1278,
+          "url": "https://github.com/rasbt/mlxtend/pull/1278"
+        }
+      ],
+      "decision": "No equivalent change found. #48 introduced assignment before each centroid update, without a final assignment after exhausting max_iter. #50 adds convergence tolerance. The old fork empty-cluster fix does not synchronize final assignments."
+    },
+    {
+      "number": 4,
+      "title": "Align frequent-pattern count thresholds with fractional support",
+      "source_sha": "5132989d5dc8963c9a1aeb358b50e5e9ac12b39b",
+      "branch": "fix/frequent-pattern-support-boundaries-20261115",
+      "paths": [
+        "mlxtend/frequent_patterns/fpcommon.py",
+        "mlxtend/frequent_patterns/fpgrowth.py",
+        "mlxtend/frequent_patterns/fpmax.py",
+        "mlxtend/frequent_patterns/hmine.py"
+      ],
+      "related_all_state_prs": [
+        550,
+        553,
+        573,
+        619,
+        621,
+        622,
+        667,
+        684,
+        692,
+        710,
+        891,
+        914,
+        930,
+        934,
+        1000,
+        1018,
+        1020,
+        1021,
+        1072,
+        1106,
+        1121,
+        1127,
+        1137,
+        1158,
+        1164,
+        1193
+      ],
+      "related_unmerged_prs": [
+        684,
+        1127,
+        1158
+      ],
+      "focused_comparisons": [
+        {
+          "number": 550,
+          "url": "https://github.com/rasbt/mlxtend/pull/550"
+        },
+        {
+          "number": 553,
+          "url": "https://github.com/rasbt/mlxtend/pull/553"
+        },
+        {
+          "number": 622,
+          "url": "https://github.com/rasbt/mlxtend/pull/622"
+        },
+        {
+          "number": 1000,
+          "url": "https://github.com/rasbt/mlxtend/pull/1000"
+        },
+        {
+          "number": 1020,
+          "url": "https://github.com/rasbt/mlxtend/pull/1020"
+        },
+        {
+          "number": 1106,
+          "url": "https://github.com/rasbt/mlxtend/pull/1106"
+        },
+        {
+          "number": 1137,
+          "url": "https://github.com/rasbt/mlxtend/pull/1137"
+        },
+        {
+          "number": 1164,
+          "url": "https://github.com/rasbt/mlxtend/pull/1164"
+        },
+        {
+          "number": 1191,
+          "url": "https://github.com/rasbt/mlxtend/pull/1191"
+        }
+      ],
+      "decision": "No equivalent change found for these three algorithms. #550/#553/#1020 introduce ceil(min_support*n) thresholds, #622/#1000 adjust sparse input access, and #1164 validates the support range. #1191 is related floating-boundary work but changes only Apriori's low_memory generator; it does not change FP-Growth, FP-Max, H-Mine, or their integer count conversion. This candidate fixes the three affected algorithms as one item."
+    },
+    {
+      "number": 5,
+      "title": "Fix matching class weights in LDA between-class scatter",
+      "source_sha": "e6304e468872652771e55115d34347b29dba141d",
+      "branch": "fix/lda-between-class-weights-20261115",
+      "paths": [
+        "mlxtend/feature_extraction/linear_discriminant_analysis.py"
+      ],
+      "related_all_state_prs": [
+        27,
+        28,
+        67,
+        142,
+        277,
+        318,
+        371,
+        478,
+        493,
+        653,
+        764,
+        876,
+        914,
+        930,
+        1018,
+        1021,
+        1075,
+        1137
+      ],
+      "related_unmerged_prs": [
+        277
+      ],
+      "focused_comparisons": [
+        {
+          "number": 27,
+          "url": "https://github.com/rasbt/mlxtend/pull/27"
+        },
+        {
+          "number": 28,
+          "url": "https://github.com/rasbt/mlxtend/pull/28"
+        },
+        {
+          "number": 277,
+          "url": "https://github.com/rasbt/mlxtend/pull/277"
+        },
+        {
+          "number": 478,
+          "url": "https://github.com/rasbt/mlxtend/pull/478"
+        }
+      ],
+      "decision": "No equivalent change found. #27 introduced X[y == i + 1] in between-class scatter while mean vectors use zero-based classes. #277 changes within-class scatter and adds decomposition/loadings; #478 sorts eigenvector columns. None correct the between-class sample weights."
+    },
+    {
+      "number": 6,
+      "title": "Preserve sample alignment for k-fold paired t-test inputs",
+      "source_sha": "92c3d3e0168023ec1ef0e0ca881e9c2b35606163",
+      "branch": "fix/kfold-positional-indexing-20261115",
+      "paths": [
+        "mlxtend/evaluate/ttest.py"
+      ],
+      "related_all_state_prs": [
+        323,
+        324,
+        325,
+        371,
+        493,
+        653,
+        764,
+        774,
+        876,
+        914,
+        930,
+        1018,
+        1021,
+        1075,
+        1137,
+        1158,
+        1193,
+        1242
+      ],
+      "related_unmerged_prs": [
+        1158,
+        1242
+      ],
+      "focused_comparisons": [
+        {
+          "number": 324,
+          "url": "https://github.com/rasbt/mlxtend/pull/324"
+        },
+        {
+          "number": 774,
+          "url": "https://github.com/rasbt/mlxtend/pull/774"
+        },
+        {
+          "number": 1137,
+          "url": "https://github.com/rasbt/mlxtend/pull/1137"
+        },
+        {
+          "number": 1158,
+          "url": "https://github.com/rasbt/mlxtend/pull/1158"
+        },
+        {
+          "number": 1242,
+          "url": "https://github.com/rasbt/mlxtend/pull/1242"
+        }
+      ],
+      "decision": "No equivalent change found. #324 introduced direct X[train_index]/y[train_index] in paired_ttest_kfold_cv. #1242 adds a separate corrected-resampled t-test that uses safe indexing, but leaves paired_ttest_kfold_cv unchanged."
+    },
+    {
+      "number": 7,
+      "title": "Match F-test p-values to the residual degrees of freedom",
+      "source_sha": "82d02b25ff470232eff19b056c45ff4651ed1c9a",
+      "branch": "fix/ftest-residual-degrees-20261115",
+      "paths": [
+        "mlxtend/evaluate/f_test.py"
+      ],
+      "related_all_state_prs": [
+        460,
+        461,
+        493,
+        544,
+        653,
+        764,
+        876,
+        914,
+        930,
+        1018,
+        1021,
+        1075,
+        1137,
+        1158,
+        1275
+      ],
+      "related_unmerged_prs": [
+        1158,
+        1275
+      ],
+      "focused_comparisons": [
+        {
+          "number": 460,
+          "url": "https://github.com/rasbt/mlxtend/pull/460"
+        },
+        {
+          "number": 461,
+          "url": "https://github.com/rasbt/mlxtend/pull/461"
+        },
+        {
+          "number": 544,
+          "url": "https://github.com/rasbt/mlxtend/pull/544"
+        },
+        {
+          "number": 1137,
+          "url": "https://github.com/rasbt/mlxtend/pull/1137"
+        },
+        {
+          "number": 1158,
+          "url": "https://github.com/rasbt/mlxtend/pull/1158"
+        },
+        {
+          "number": 1275,
+          "url": "https://github.com/rasbt/mlxtend/pull/1275"
+        }
+      ],
+      "decision": "No equivalent change found. #460 introduced denominator degrees (models-1)*samples even though residual mean square uses (models-1)*(samples-1). #1275 and the matching old fork branch optimize object-count enumeration without changing degrees of freedom."
+    },
+    {
+      "number": 8,
+      "title": "Flatten multi-output stacking predictions into consistent meta-features",
+      "source_sha": "a45aa4a37ae27402c01050f63bb99d72dd8875cb",
+      "branch": "fix/stacking-multioutput-features-20261115",
+      "paths": [
+        "mlxtend/classifier/_base_classification.py",
+        "mlxtend/classifier/stacking_classification.py",
+        "mlxtend/classifier/stacking_cv_classification.py"
+      ],
+      "related_all_state_prs": [
+        13,
+        15,
+        20,
+        21,
+        50,
+        77,
+        102,
+        104,
+        105,
+        108,
+        110,
+        111,
+        125,
+        139,
+        142,
+        147,
+        186,
+        187,
+        198,
+        203,
+        204,
+        214,
+        254,
+        255,
+        259,
+        300,
+        318,
+        326,
+        353,
+        368,
+        370,
+        371,
+        410,
+        417,
+        441,
+        445,
+        493,
+        513,
+        522,
+        523,
+        532,
+        563,
+        600,
+        606,
+        634,
+        653,
+        670,
+        675,
+        764,
+        876,
+        914,
+        930,
+        998,
+        1018,
+        1021,
+        1060,
+        1075,
+        1089,
+        1091,
+        1124,
+        1137,
+        1158
+      ],
+      "related_unmerged_prs": [
+        111,
+        186,
+        187,
+        255,
+        445,
+        1060,
+        1158
+      ],
+      "focused_comparisons": [
+        {
+          "number": 139,
+          "url": "https://github.com/rasbt/mlxtend/pull/139"
+        },
+        {
+          "number": 186,
+          "url": "https://github.com/rasbt/mlxtend/pull/186"
+        },
+        {
+          "number": 187,
+          "url": "https://github.com/rasbt/mlxtend/pull/187"
+        },
+        {
+          "number": 445,
+          "url": "https://github.com/rasbt/mlxtend/pull/445"
+        },
+        {
+          "number": 513,
+          "url": "https://github.com/rasbt/mlxtend/pull/513"
+        },
+        {
+          "number": 522,
+          "url": "https://github.com/rasbt/mlxtend/pull/522"
+        },
+        {
+          "number": 532,
+          "url": "https://github.com/rasbt/mlxtend/pull/532"
+        },
+        {
+          "number": 634,
+          "url": "https://github.com/rasbt/mlxtend/pull/634"
+        },
+        {
+          "number": 675,
+          "url": "https://github.com/rasbt/mlxtend/pull/675"
+        },
+        {
+          "number": 802,
+          "url": "https://github.com/rasbt/mlxtend/pull/802"
+        },
+        {
+          "number": 1060,
+          "url": "https://github.com/rasbt/mlxtend/pull/1060"
+        },
+        {
+          "number": 1091,
+          "url": "https://github.com/rasbt/mlxtend/pull/1091"
+        }
+      ],
+      "decision": "No equivalent change found for probability-list flattening and CV multi-output predictions. #139 supports ordinary StackingClassifier multi-target class predictions; it does not flatten list-valued predict_proba outputs. #445's alternative stacking/ hierarchy still passes probability lists through np.asarray or shape access and reshapes CV predictions to one column. #513/#522/#532/#675 likewise retain single-output assumptions. #802 affects the regressor, not the two classifier paths."
+    },
+    {
+      "number": 9,
+      "title": "Retain original class labels in OneR rules and predictions",
+      "source_sha": "acff09cc0ddc0eec22e6c5db3078b03be0910e59",
+      "branch": "fix/oner-original-class-labels-20261115",
+      "paths": [
+        "mlxtend/classifier/oner.py"
+      ],
+      "related_all_state_prs": [
+        727,
+        764,
+        790,
+        796,
+        876,
+        914,
+        930,
+        1018,
+        1021,
+        1075,
+        1089,
+        1137,
+        1158,
+        1276
+      ],
+      "related_unmerged_prs": [
+        1158,
+        1276
+      ],
+      "focused_comparisons": [
+        {
+          "number": 727,
+          "url": "https://github.com/rasbt/mlxtend/pull/727"
+        },
+        {
+          "number": 790,
+          "url": "https://github.com/rasbt/mlxtend/pull/790"
+        },
+        {
+          "number": 796,
+          "url": "https://github.com/rasbt/mlxtend/pull/796"
+        },
+        {
+          "number": 1158,
+          "url": "https://github.com/rasbt/mlxtend/pull/1158"
+        },
+        {
+          "number": 1276,
+          "url": "https://github.com/rasbt/mlxtend/pull/1276"
+        }
+      ],
+      "decision": "No equivalent change found. #727 bins original labels with np.bincount and allocates integer predictions. #790/#796 adjust deprecated integer dtypes. #1276 and its old fork branch only fix chi-squared feature tie selection; label encoding, original-label rules, and prediction dtype remain unchanged."
+    },
+    {
+      "number": 10,
+      "title": "Apply the one-standard-error rule to parsimonious SFS selection",
+      "source_sha": "b74231500a2eb39cd4d5936c10fec932b10f48c4",
+      "branch": "fix/sfs-one-standard-error-20261115",
+      "paths": [
+        "mlxtend/feature_selection/sequential_feature_selector.py"
+      ],
+      "related_all_state_prs": [
+        15,
+        20,
+        21,
+        52,
+        64,
+        82,
+        89,
+        107,
+        110,
+        116,
+        121,
+        125,
+        130,
+        133,
+        141,
+        142,
+        171,
+        193,
+        211,
+        213,
+        237,
+        240,
+        262,
+        272,
+        280,
+        318,
+        350,
+        354,
+        371,
+        375,
+        377,
+        379,
+        493,
+        506,
+        529,
+        537,
+        555,
+        578,
+        638,
+        640,
+        650,
+        653,
+        705,
+        732,
+        763,
+        764,
+        876,
+        886,
+        914,
+        930,
+        963,
+        965,
+        1018,
+        1021,
+        1075,
+        1089,
+        1107,
+        1133,
+        1135,
+        1137,
+        1140,
+        1158,
+        1160,
+        1255
+      ],
+      "related_unmerged_prs": [
+        272,
+        280,
+        638,
+        640,
+        650,
+        886,
+        963,
+        1135,
+        1140,
+        1158,
+        1160,
+        1255
+      ],
+      "focused_comparisons": [
+        {
+          "number": 240,
+          "url": "https://github.com/rasbt/mlxtend/pull/240"
+        },
+        {
+          "number": 886,
+          "url": "https://github.com/rasbt/mlxtend/pull/886"
+        },
+        {
+          "number": 963,
+          "url": "https://github.com/rasbt/mlxtend/pull/963"
+        },
+        {
+          "number": 965,
+          "url": "https://github.com/rasbt/mlxtend/pull/965"
+        },
+        {
+          "number": 1160,
+          "url": "https://github.com/rasbt/mlxtend/pull/1160"
+        }
+      ],
+      "decision": "No equivalent change found. #240 introduces the parsimonious rule using each candidate's std/n and a moving best-score threshold; #965 moves the same formula to finalize_fit. #963 preserves it. #886/#1160 add early stopping, not a fixed threshold based on the best subset's SEM."
+    },
+    {
+      "number": 11,
+      "title": "Avoid quadratic sample-space allocation in PCA SVD",
+      "source_sha": "0c658f8b938823e6f54f2d88f11145223bdbc53e",
+      "branch": "perf/pca-svd-sample-memory-20261115",
+      "paths": [
+        "mlxtend/feature_extraction/principal_component_analysis.py"
+      ],
+      "related_all_state_prs": [
+        25,
+        27,
+        28,
+        67,
+        142,
+        251,
+        318,
+        371,
+        474,
+        475,
+        477,
+        493,
+        545,
+        565,
+        595,
+        653,
+        764,
+        876,
+        914,
+        930,
+        1010,
+        1011,
+        1012,
+        1021,
+        1075,
+        1080,
+        1137
+      ],
+      "related_unmerged_prs": [
+        1011,
+        1012
+      ],
+      "focused_comparisons": [
+        {
+          "number": 67,
+          "url": "https://github.com/rasbt/mlxtend/pull/67"
+        },
+        {
+          "number": 251,
+          "url": "https://github.com/rasbt/mlxtend/pull/251"
+        },
+        {
+          "number": 474,
+          "url": "https://github.com/rasbt/mlxtend/pull/474"
+        },
+        {
+          "number": 475,
+          "url": "https://github.com/rasbt/mlxtend/pull/475"
+        },
+        {
+          "number": 477,
+          "url": "https://github.com/rasbt/mlxtend/pull/477"
+        },
+        {
+          "number": 545,
+          "url": "https://github.com/rasbt/mlxtend/pull/545"
+        },
+        {
+          "number": 565,
+          "url": "https://github.com/rasbt/mlxtend/pull/565"
+        },
+        {
+          "number": 595,
+          "url": "https://github.com/rasbt/mlxtend/pull/595"
+        },
+        {
+          "number": 1010,
+          "url": "https://github.com/rasbt/mlxtend/pull/1010"
+        },
+        {
+          "number": 1011,
+          "url": "https://github.com/rasbt/mlxtend/pull/1011"
+        },
+        {
+          "number": 1012,
+          "url": "https://github.com/rasbt/mlxtend/pull/1012"
+        },
+        {
+          "number": 1080,
+          "url": "https://github.com/rasbt/mlxtend/pull/1080"
+        },
+        {
+          "number": 1158,
+          "url": "https://github.com/rasbt/mlxtend/pull/1158"
+        }
+      ],
+      "decision": "No equivalent change found. Historical SVD implementations retain full_matrices default True; #1080 changes NumPy to SciPy/gesvd, while #1010/#1011/#1012 only alter an error string. Existing fork PCA branches correct fitted centering and symmetric eigendecomposition, without changing SVD allocation. This candidate preserves the full feature basis for wide data."
+    },
+    {
+      "number": 12,
+      "title": "Apply voting estimator replacements before nested parameter updates",
+      "source_sha": "d8c53d9a4c67015e4ef26c423aa4be5ee22bf38e",
+      "branch": "fix/vote-estimator-replacement-20261115",
+      "paths": [
+        "mlxtend/classifier/ensemble_vote.py"
+      ],
+      "related_all_state_prs": [
+        15,
+        20,
+        21,
+        50,
+        111,
+        120,
+        126,
+        142,
+        254,
+        259,
+        318,
+        322,
+        371,
+        441,
+        493,
+        634,
+        653,
+        670,
+        764,
+        834,
+        854,
+        876,
+        914,
+        930,
+        994,
+        1018,
+        1021,
+        1060,
+        1075,
+        1089,
+        1135,
+        1137,
+        1140,
+        1158,
+        1230,
+        1292
+      ],
+      "related_unmerged_prs": [
+        111,
+        834,
+        1060,
+        1135,
+        1140,
+        1158,
+        1230,
+        1292
+      ],
+      "focused_comparisons": [
+        {
+          "number": 254,
+          "url": "https://github.com/rasbt/mlxtend/pull/254"
+        },
+        {
+          "number": 259,
+          "url": "https://github.com/rasbt/mlxtend/pull/259"
+        },
+        {
+          "number": 515,
+          "url": "https://github.com/rasbt/mlxtend/pull/515"
+        },
+        {
+          "number": 522,
+          "url": "https://github.com/rasbt/mlxtend/pull/522"
+        },
+        {
+          "number": 834,
+          "url": "https://github.com/rasbt/mlxtend/pull/834"
+        },
+        {
+          "number": 854,
+          "url": "https://github.com/rasbt/mlxtend/pull/854"
+        },
+        {
+          "number": 1060,
+          "url": "https://github.com/rasbt/mlxtend/pull/1060"
+        },
+        {
+          "number": 1135,
+          "url": "https://github.com/rasbt/mlxtend/pull/1135"
+        },
+        {
+          "number": 1140,
+          "url": "https://github.com/rasbt/mlxtend/pull/1140"
+        },
+        {
+          "number": 1230,
+          "url": "https://github.com/rasbt/mlxtend/pull/1230"
+        },
+        {
+          "number": 1292,
+          "url": "https://github.com/rasbt/mlxtend/pull/1292"
+        }
+      ],
+      "decision": "No equivalent change found. #254/#259 expose vote parameters through the stale cached named_clfs map. #515/#522 provide replacement handling for stacking classes, not EnsembleVoteClassifier. #834/#854 only update six iteration. #1292 and the old fork branch align prefit probability columns; they do not resolve named replacement or stale parameter maps."
+    },
+    {
+      "number": 13,
+      "title": "Use n_scores minus one degrees of freedom for selector score intervals",
+      "source_sha": "1b1154e5e2094c959756d5dbeb64fba20b4fa241",
+      "branch": "fix/selector-confidence-degrees-20261115",
+      "paths": [
+        "mlxtend/feature_selection/exhaustive_feature_selector.py",
+        "mlxtend/feature_selection/sequential_feature_selector.py"
+      ],
+      "related_all_state_prs": [
+        15,
+        20,
+        21,
+        52,
+        64,
+        82,
+        89,
+        96,
+        107,
+        110,
+        116,
+        121,
+        125,
+        130,
+        133,
+        141,
+        142,
+        171,
+        193,
+        195,
+        211,
+        213,
+        237,
+        240,
+        262,
+        272,
+        280,
+        318,
+        350,
+        354,
+        371,
+        375,
+        377,
+        379,
+        380,
+        493,
+        506,
+        529,
+        537,
+        555,
+        578,
+        638,
+        640,
+        650,
+        651,
+        653,
+        695,
+        705,
+        732,
+        763,
+        764,
+        876,
+        886,
+        914,
+        930,
+        957,
+        963,
+        965,
+        1018,
+        1021,
+        1044,
+        1075,
+        1089,
+        1104,
+        1107,
+        1133,
+        1135,
+        1137,
+        1140,
+        1158,
+        1160,
+        1165,
+        1245,
+        1255
+      ],
+      "related_unmerged_prs": [
+        272,
+        280,
+        638,
+        640,
+        650,
+        651,
+        886,
+        963,
+        1044,
+        1135,
+        1140,
+        1158,
+        1160,
+        1245,
+        1255
+      ],
+      "focused_comparisons": [
+        {
+          "number": 96,
+          "url": "https://github.com/rasbt/mlxtend/pull/96"
+        },
+        {
+          "number": 834,
+          "url": "https://github.com/rasbt/mlxtend/pull/834"
+        },
+        {
+          "number": 861,
+          "url": "https://github.com/rasbt/mlxtend/pull/861"
+        },
+        {
+          "number": 963,
+          "url": "https://github.com/rasbt/mlxtend/pull/963"
+        },
+        {
+          "number": 965,
+          "url": "https://github.com/rasbt/mlxtend/pull/965"
+        },
+        {
+          "number": 1165,
+          "url": "https://github.com/rasbt/mlxtend/pull/1165"
+        }
+      ],
+      "decision": "No equivalent change found. Both existing _calc_confidence implementations and the generic-selector proposals #834/#861 use t quantiles with len(scores), not len(scores)-1. #963 retains the same formula and #1165 changes result selection, not uncertainty computation. The two selectors are fixed together."
+    },
+    {
+      "number": 14,
+      "title": "Preserve input arrays during permutation importance",
+      "source_sha": "d0249101d8e5caef4eaea53fe0b61ff65671ded1",
+      "branch": "fix/permutation-input-preservation-20261115",
+      "paths": [
+        "mlxtend/evaluate/feature_importance.py"
+      ],
+      "related_all_state_prs": [
+        358,
+        371,
+        493,
+        528,
+        653,
+        764,
+        876,
+        914,
+        955,
+        1021,
+        1075,
+        1137,
+        1142,
+        1229
+      ],
+      "related_unmerged_prs": [
+        1142,
+        1229
+      ],
+      "focused_comparisons": [
+        {
+          "number": 358,
+          "url": "https://github.com/rasbt/mlxtend/pull/358"
+        },
+        {
+          "number": 528,
+          "url": "https://github.com/rasbt/mlxtend/pull/528"
+        },
+        {
+          "number": 955,
+          "url": "https://github.com/rasbt/mlxtend/pull/955"
+        },
+        {
+          "number": 1142,
+          "url": "https://github.com/rasbt/mlxtend/pull/1142"
+        },
+        {
+          "number": 1229,
+          "url": "https://github.com/rasbt/mlxtend/pull/1229"
+        }
+      ],
+      "decision": "No equivalent change found. #358/#955 operate on the caller array and restore columns only on the successful path. #1142/#1229 correct which feature-group columns are permuted; neither makes a writable input copy or protects the caller array when callbacks raise."
+    },
+    {
+      "number": 15,
+      "title": "Center RBF kernel matrices with in-place mean subtraction",
+      "source_sha": "66c12792d9c765dea68a7606a27c373fefaab77a",
+      "branch": "perf/kernel-centering-memory-20261115",
+      "paths": [
+        "mlxtend/feature_extraction/rbf_kernel_pca.py"
+      ],
+      "related_all_state_prs": [
+        28,
+        67,
+        142,
+        318,
+        371,
+        493,
+        653,
+        764,
+        876,
+        914,
+        930,
+        1018,
+        1021,
+        1075,
+        1137
+      ],
+      "related_unmerged_prs": [],
+      "focused_comparisons": [
+        {
+          "number": 28,
+          "url": "https://github.com/rasbt/mlxtend/pull/28"
+        },
+        {
+          "number": 67,
+          "url": "https://github.com/rasbt/mlxtend/pull/67"
+        }
+      ],
+      "decision": "No equivalent change found. #28 introduces dense one_n dot products for training-kernel centering and later changes preserve them. The old fork kernel-pca-projection branch centers the cross-kernel at transform time and stores training means, while retaining the original dense training centering products."
+    },
+    {
+      "number": 16,
+      "title": "Ignore NaN candidate means when ranking sequential feature subsets",
+      "source_sha": "8e6351dc5fa7f295140d2b176701542002b2e2e7",
+      "branch": "fix/sfs-nan-candidate-ranking-20261115",
+      "paths": [
+        "mlxtend/feature_selection/sequential_feature_selector.py"
+      ],
+      "related_all_state_prs": [
+        15,
+        20,
+        21,
+        52,
+        64,
+        82,
+        89,
+        107,
+        110,
+        116,
+        121,
+        125,
+        130,
+        133,
+        141,
+        142,
+        171,
+        193,
+        211,
+        213,
+        237,
+        240,
+        262,
+        272,
+        280,
+        318,
+        350,
+        354,
+        371,
+        375,
+        377,
+        379,
+        493,
+        506,
+        529,
+        537,
+        555,
+        578,
+        638,
+        640,
+        650,
+        653,
+        705,
+        732,
+        763,
+        764,
+        876,
+        886,
+        914,
+        930,
+        963,
+        965,
+        1018,
+        1021,
+        1075,
+        1089,
+        1107,
+        1133,
+        1135,
+        1137,
+        1140,
+        1158,
+        1160,
+        1255
+      ],
+      "related_unmerged_prs": [
+        272,
+        280,
+        638,
+        640,
+        650,
+        886,
+        963,
+        1135,
+        1140,
+        1158,
+        1160,
+        1255
+      ],
+      "focused_comparisons": [
+        {
+          "number": 211,
+          "url": "https://github.com/rasbt/mlxtend/pull/211"
+        },
+        {
+          "number": 640,
+          "url": "https://github.com/rasbt/mlxtend/pull/640"
+        },
+        {
+          "number": 963,
+          "url": "https://github.com/rasbt/mlxtend/pull/963"
+        },
+        {
+          "number": 965,
+          "url": "https://github.com/rasbt/mlxtend/pull/965"
+        },
+        {
+          "number": 1160,
+          "url": "https://github.com/rasbt/mlxtend/pull/1160"
+        }
+      ],
+      "decision": "No equivalent change found. #211 changes means to nanmean but leaves argmax over potentially all-NaN candidate means. #640 changes cross_val_score(error_score=-inf), which does not address scorer-produced NaN means or candidate ranking generally. #963/#965 retain plain argmax and #1160 guards an early-stopping comparison, not candidate selection."
+    },
+    {
+      "number": 17,
+      "title": "Infer GroupTimeSeriesSplit fold counts before the first split",
+      "source_sha": "f83ea85645d634723a6764ae22f8bf1609032652",
+      "branch": "fix/group-time-series-split-count-20261115",
+      "paths": [
+        "mlxtend/evaluate/time_series.py"
+      ],
+      "related_all_state_prs": [
+        915,
+        1018,
+        1021,
+        1113,
+        1273
+      ],
+      "related_unmerged_prs": [
+        1273
+      ],
+      "focused_comparisons": [
+        {
+          "number": 915,
+          "url": "https://github.com/rasbt/mlxtend/pull/915"
+        },
+        {
+          "number": 1113,
+          "url": "https://github.com/rasbt/mlxtend/pull/1113"
+        },
+        {
+          "number": 1273,
+          "url": "https://github.com/rasbt/mlxtend/pull/1273"
+        }
+      ],
+      "decision": "No equivalent change found. #915 adds get_n_splits as a return of self.n_splits. #1113 changes plotting. #1273 resets constructor parameters for reuse after split(), but still returns None when get_n_splits is called before the first split without explicit n_splits."
+    },
+    {
+      "number": 18,
+      "title": "Preserve global maximality when limiting FPMax itemset lengths",
+      "source_sha": "4cd04ba60457a227b29402b7dbfbf9a6245b5ec3",
+      "branch": "fix/fpmax-length-maximality-20261115",
+      "paths": [
+        "mlxtend/frequent_patterns/fpmax.py"
+      ],
+      "related_all_state_prs": [
+        553,
+        573,
+        619,
+        667,
+        692,
+        710,
+        914,
+        930,
+        1000,
+        1021,
+        1106,
+        1137,
+        1164,
+        1193
+      ],
+      "related_unmerged_prs": [],
+      "focused_comparisons": [
+        {
+          "number": 553,
+          "url": "https://github.com/rasbt/mlxtend/pull/553"
+        },
+        {
+          "number": 573,
+          "url": "https://github.com/rasbt/mlxtend/pull/573"
+        },
+        {
+          "number": 692,
+          "url": "https://github.com/rasbt/mlxtend/pull/692"
+        },
+        {
+          "number": 1000,
+          "url": "https://github.com/rasbt/mlxtend/pull/1000"
+        },
+        {
+          "number": 1106,
+          "url": "https://github.com/rasbt/mlxtend/pull/1106"
+        },
+        {
+          "number": 1137,
+          "url": "https://github.com/rasbt/mlxtend/pull/1137"
+        },
+        {
+          "number": 1193,
+          "url": "https://github.com/rasbt/mlxtend/pull/1193"
+        },
+        {
+          "number": 1198,
+          "url": "https://github.com/rasbt/mlxtend/pull/1198"
+        }
+      ],
+      "decision": "No equivalent change found. #553 limits recursion at max_len without retaining frequent-extension evidence for maximality; #692 corrects path support values, #1000 handles sparse input, #1193 changes a default description, and #1198 is documentation about maximal itemsets/association-rule limitations. None repair the length-boundary maximality cache."
+    },
+    {
+      "number": 19,
+      "title": "Preserve cross-validation metadata routing across feature-selection workers",
+      "source_sha": "8060a7b6af13125cb57dfd0d9b46bdd75ec3daa5",
+      "branch": "fix/selector-cv-metadata-routing-20261115",
+      "paths": [
+        "mlxtend/feature_selection/exhaustive_feature_selector.py",
+        "mlxtend/feature_selection/sequential_feature_selector.py",
+        "mlxtend/feature_selection/utilities.py"
+      ],
+      "related_all_state_prs": [
+        15,
+        20,
+        21,
+        52,
+        64,
+        82,
+        89,
+        96,
+        107,
+        110,
+        116,
+        121,
+        125,
+        130,
+        133,
+        141,
+        142,
+        171,
+        193,
+        195,
+        211,
+        213,
+        237,
+        240,
+        262,
+        272,
+        280,
+        318,
+        350,
+        354,
+        371,
+        375,
+        377,
+        379,
+        380,
+        493,
+        506,
+        529,
+        537,
+        555,
+        578,
+        638,
+        640,
+        650,
+        651,
+        653,
+        695,
+        705,
+        732,
+        763,
+        764,
+        876,
+        886,
+        914,
+        930,
+        957,
+        963,
+        965,
+        1018,
+        1021,
+        1044,
+        1075,
+        1089,
+        1104,
+        1107,
+        1109,
+        1133,
+        1135,
+        1137,
+        1140,
+        1158,
+        1160,
+        1165,
+        1245,
+        1255
+      ],
+      "related_unmerged_prs": [
+        272,
+        280,
+        638,
+        640,
+        650,
+        651,
+        886,
+        963,
+        1044,
+        1135,
+        1140,
+        1158,
+        1160,
+        1245,
+        1255
+      ],
+      "focused_comparisons": [
+        {
+          "number": 350,
+          "url": "https://github.com/rasbt/mlxtend/pull/350"
+        },
+        {
+          "number": 354,
+          "url": "https://github.com/rasbt/mlxtend/pull/354"
+        },
+        {
+          "number": 537,
+          "url": "https://github.com/rasbt/mlxtend/pull/537"
+        },
+        {
+          "number": 834,
+          "url": "https://github.com/rasbt/mlxtend/pull/834"
+        },
+        {
+          "number": 861,
+          "url": "https://github.com/rasbt/mlxtend/pull/861"
+        },
+        {
+          "number": 963,
+          "url": "https://github.com/rasbt/mlxtend/pull/963"
+        },
+        {
+          "number": 965,
+          "url": "https://github.com/rasbt/mlxtend/pull/965"
+        },
+        {
+          "number": 1109,
+          "url": "https://github.com/rasbt/mlxtend/pull/1109"
+        },
+        {
+          "number": 1245,
+          "url": "https://github.com/rasbt/mlxtend/pull/1245"
+        },
+        {
+          "number": 1255,
+          "url": "https://github.com/rasbt/mlxtend/pull/1255"
+        }
+      ],
+      "decision": "No equivalent metadata-routing change found. #350/#354/#537 provide legacy fit_params/groups forwarding. #1109 selects params versus fit_params by sklearn version but still passes groups directly and uses joblib Parallel. #963 proposes a custom weighted CV implementation with fixed StratifiedKFold, not sklearn metadata routing. #1245 changes serial interruption/progress; #1255 preserves DataFrames. None route groups through params with routing enabled and propagate sklearn config into parallel tasks."
+    },
+    {
+      "number": 20,
+      "title": "Resolve named stacking replacements before removing estimators",
+      "source_sha": "2aac2afe30499cb7d3ebd25f3e047d770d8233fd",
+      "branch": "fix/stacking-named-estimator-removal-20261115",
+      "paths": [
+        "mlxtend/utils/base_compostion.py"
+      ],
+      "related_all_state_prs": [
+        515,
+        834,
+        854,
+        914
+      ],
+      "related_unmerged_prs": [
+        834
+      ],
+      "focused_comparisons": [
+        {
+          "number": 515,
+          "url": "https://github.com/rasbt/mlxtend/pull/515"
+        },
+        {
+          "number": 522,
+          "url": "https://github.com/rasbt/mlxtend/pull/522"
+        },
+        {
+          "number": 834,
+          "url": "https://github.com/rasbt/mlxtend/pull/834"
+        },
+        {
+          "number": 854,
+          "url": "https://github.com/rasbt/mlxtend/pull/854"
+        },
+        {
+          "number": 914,
+          "url": "https://github.com/rasbt/mlxtend/pull/914"
+        }
+      ],
+      "decision": "No equivalent change found. #515 introduces the helper and deletes individual estimators while later replacements still use original indices. #522 adopts the helper for other stacking classes. #834/#854 adjust dict iteration and #914 reformats it. None resolve all named replacements before filtering removals."
+    }
+  ],
+  "old_fork_heads": [
+    {
+      "name": "chore/pin-lint-python-20261104",
+      "sha": "410abc2b778310c64cab57dd284171a73747181d",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...410abc2b778310c64cab57dd284171a73747181d",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/adaline-rank-deficient-fit-20261112",
+      "sha": "827006c66fc727b418f6ecffacba613d637e6c25",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...827006c66fc727b418f6ecffacba613d637e6c25",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/bootstrap-empty-indices-20261112",
+      "sha": "25a759600166f75c73c2be2cc707a1ae5cc391ec",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...25a759600166f75c73c2be2cc707a1ae5cc391ec",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/bootstrap-fit-parameter-alignment-20261112",
+      "sha": "243f619bf8497cef2932958a133815edee844442",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...243f619bf8497cef2932958a133815edee844442",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/column-selector-default-20261029",
+      "sha": "52f79844f00eba0d0239959570ab4210e3b39bf0",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...52f79844f00eba0d0239959570ab4210e3b39bf0",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/counterfactual-probability-labels-20261112",
+      "sha": "3f20692e5c34088ae7a5362c20a36676923e1107",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...3f20692e5c34088ae7a5362c20a36676923e1107",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/efs-refit-feature-groups-20261112",
+      "sha": "182d9779d56efc865f6860b21aa6fe0c0fe5927a",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...182d9779d56efc865f6860b21aa6fe0c0fe5927a",
+      "overlap_paths": [
+        "mlxtend/feature_selection/exhaustive_feature_selector.py"
+      ]
+    },
+    {
+      "name": "fix/emoticon-word-separation",
+      "sha": "629ac00ec3836310471723decbad66d2d959a785",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...629ac00ec3836310471723decbad66d2d959a785",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/f1-zero-true-positives-20261112",
+      "sha": "a66afa0e4a0c35f9be89a3b1d66f65ee843f31e9",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...a66afa0e4a0c35f9be89a3b1d66f65ee843f31e9",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/holdout-stratification-20261104",
+      "sha": "4830af886b0604ec205755306bca21f315df4586",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...4830af886b0604ec205755306bca21f315df4586",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/kernel-pca-projection-20261112",
+      "sha": "244713f0a40777d95768366b3cb1f2d980867927",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...244713f0a40777d95768366b3cb1f2d980867927",
+      "overlap_paths": [
+        "mlxtend/feature_extraction/rbf_kernel_pca.py"
+      ]
+    },
+    {
+      "name": "fix/kmeans-empty-clusters-20261112",
+      "sha": "ad822cdf0c94a87a20db746dd02f8477127402c0",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...ad822cdf0c94a87a20db746dd02f8477127402c0",
+      "overlap_paths": [
+        "mlxtend/cluster/kmeans.py"
+      ]
+    },
+    {
+      "name": "fix/literal-filegroups-and-hidden-recursion",
+      "sha": "c8a1e7e78b232b5f499bacbd0fe62eb2f668ed01",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...c8a1e7e78b232b5f499bacbd0fe62eb2f668ed01",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/mean-centerer-shapes-20261029",
+      "sha": "ac19da19aef4e596ed4911a9b0557b42d79273a0",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...ac19da19aef4e596ed4911a9b0557b42d79273a0",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/minmax-single-endpoint-range",
+      "sha": "9024aef4fd6cedaac4ff7c1389d9e937694d183c",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...9024aef4fd6cedaac4ff7c1389d9e937694d183c",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/mlp-epoch-learning-rate-20261112",
+      "sha": "5d2286368bd22a55dd1632ff70415135dc983a9c",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...5d2286368bd22a55dd1632ff70415135dc983a9c",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/mlp-l1-regularization-20261112",
+      "sha": "a951ff1bab7c5aa14f42604c998806bd96dc3c9a",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...a951ff1bab7c5aa14f42604c998806bd96dc3c9a",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/mlp-momentum-continuation-20261112",
+      "sha": "8840df2926c26d7a2c98e907c03d76a9cb9fe1c7",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...8840df2926c26d7a2c98e907c03d76a9cb9fe1c7",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/mlp-output-probabilities-20261112",
+      "sha": "840ca8e1abe3e65ef087be62ea96256908fa48d7",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...840ca8e1abe3e65ef087be62ea96256908fa48d7",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/no-information-classification-memory-20261005",
+      "sha": "30508bcee6df06a1d7971784d67f4902d86ec85e",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...30508bcee6df06a1d7971784d67f4902d86ec85e",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/one-hot-batch-width-and-indexing",
+      "sha": "9976102da70a70d38ffe8655876d95d3ad5be148",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...9976102da70a70d38ffe8655876d95d3ad5be148",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/oner-chi-squared-ties-20261104",
+      "sha": "a150748c0fd606acedc2f5d50a7805b2de83de6b",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...a150748c0fd606acedc2f5d50a7805b2de83de6b",
+      "overlap_paths": [
+        "mlxtend/classifier/oner.py"
+      ]
+    },
+    {
+      "name": "fix/oob-binary-probability-scoring-20261112",
+      "sha": "0cb08a3633ba3ca205c98b525237d82ae92c8d69",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...0cb08a3633ba3ca205c98b525237d82ae92c8d69",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/paired-permutation-dtype-20261029",
+      "sha": "1e7a781f510b95e3754ed4b282d002d4f812d118",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...1e7a781f510b95e3754ed4b282d002d4f812d118",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/pca-fitted-centering-20261112",
+      "sha": "12537bbc37f10627682554d626447fdcd26440d3",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...12537bbc37f10627682554d626447fdcd26440d3",
+      "overlap_paths": [
+        "mlxtend/feature_extraction/principal_component_analysis.py"
+      ]
+    },
+    {
+      "name": "fix/pca-real-eigendecomposition-20261112",
+      "sha": "ce28b2304073c9c98d655ab428e4de1b1e940ed4",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...ce28b2304073c9c98d655ab428e4de1b1e940ed4",
+      "overlap_paths": [
+        "mlxtend/feature_extraction/principal_component_analysis.py"
+      ]
+    },
+    {
+      "name": "fix/permutation-statistic-relative-tolerance-20261112",
+      "sha": "0851fd270d460d8ce4cf582d19ba8cb1a6a1307a",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...0851fd270d460d8ce4cf582d19ba8cb1a6a1307a",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/prefit-vote-probability-columns-20261112",
+      "sha": "cf80c72190f17e49bd230779ee261eb254b9a6c4",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...cf80c72190f17e49bd230779ee261eb254b9a6c4",
+      "overlap_paths": [
+        "mlxtend/classifier/ensemble_vote.py"
+      ]
+    },
+    {
+      "name": "fix/preserve-standardize-params",
+      "sha": "94ac8e4c0e2da3d4a549766834516323020dc8d6",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...94ac8e4c0e2da3d4a549766834516323020dc8d6",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/refit-inferred-class-count-20261112",
+      "sha": "41c53b0b097fae747c6686f37797a159e7f91cc6",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...41c53b0b097fae747c6686f37797a159e7f91cc6",
+      "overlap_paths": []
+    },
+    {
+      "name": "fix/stable-classifier-loss-20261112",
+      "sha": "02482ab653eea126bfa4fd8f2dfd3480ae4cfebf",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...02482ab653eea126bfa4fd8f2dfd3480ae4cfebf",
+      "overlap_paths": []
+    },
+    {
+      "name": "master",
+      "sha": "93ac19f44b8e9688ea76459bb523a964a1dab2b6",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...93ac19f44b8e9688ea76459bb523a964a1dab2b6",
+      "overlap_paths": []
+    },
+    {
+      "name": "perf/confusion-pair-counts-20261112",
+      "sha": "7ab812f8b86639ac07925e1274bc4955b2dd2bed",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...7ab812f8b86639ac07925e1274bc4955b2dd2bed",
+      "overlap_paths": []
+    },
+    {
+      "name": "perf/model-comparison-counts-20261104",
+      "sha": "360bae1bef08e7d718c6d5d5eb943e087eb64224",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...360bae1bef08e7d718c6d5d5eb943e087eb64224",
+      "overlap_paths": [
+        "mlxtend/evaluate/f_test.py"
+      ]
+    },
+    {
+      "name": "validation/upstream-master-20261104",
+      "sha": "1aee767ef57b84a8191511a08955c583b65de382",
+      "compare_url": "https://github.com/Afloat16/mlxtend/compare/1aee767ef57b84a8191511a08955c583b65de382...1aee767ef57b84a8191511a08955c583b65de382",
+      "overlap_paths": []
+    }
+  ],
+  "previous_integration_validation": {
+    "url": "https://github.com/Afloat16/mlxtend/actions/runs/43672944243",
+    "result": "1151 passed, 3 skipped; changed Python style checks passed.",
+    "note": "Integration remains a verification of the same 20 items, not a new contribution."
+  }
+}
