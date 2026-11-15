@@ -25,7 +25,9 @@ def expected_result(samples, targets, shuffle):
     scorer = get_scorer("neg_mean_squared_error")
     for train, test in splitter.split(samples):
         for column, alpha in enumerate([0.1, 20.0]):
-            model = Ridge(alpha=alpha, solver="lsqr").fit(samples[train], targets[train])
+            model = Ridge(alpha=alpha, solver="lsqr").fit(
+                samples[train], targets[train]
+            )
             scores[column].append(scorer(model, samples[test], targets[test]))
     result = stats.ttest_rel(*scores)
     assert np.isfinite([result.statistic, result.pvalue]).all()
