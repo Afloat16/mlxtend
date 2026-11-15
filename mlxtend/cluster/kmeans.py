@@ -44,6 +44,8 @@ class Kmeans(_BaseModel, _Cluster, _IterativeModel):
     -----------
     centroids_ : 2d-array, shape={k, n_features}
         Feature values of the k cluster centroids.
+        Distances are computed with at least float64 precision, including
+        when the input samples and initial centroids contain integers.
     custers_ : dictionary
         The cluster assignments stored as a Python dictionary;
         the dictionary keys denote the cluster indeces and the items are
@@ -128,9 +130,12 @@ class Kmeans(_BaseModel, _Cluster, _IterativeModel):
         return self
 
     def _get_cluster_idx(self, X, centroids):
+        # Promote before subtraction and squaring to avoid integer overflow.
+        dtype = np.result_type(X.dtype, centroids.dtype, np.float64)
+        centroids = centroids.astype(dtype, copy=False)
         for sample_idx, sample in enumerate(X):
             # dist = [euclidean(sample, c) for c in self.centroids_]
-            dist = np.sqrt(np.sum(np.square(sample - self.centroids_), axis=1))
+            dist = np.sqrt(np.sum(np.square(sample - centroids), axis=1))
 
             yield np.argmin(dist)
 
