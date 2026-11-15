@@ -880,7 +880,9 @@ class SequentialFeatureSelector(_BaseXComposition, MetaEstimatorMixin):
         ----------
         confidence_interval : float (default: 0.95)
             A positive float between 0.0 and 1.0 to compute the confidence
-            interval bounds of the CV score averages.
+            interval bounds of the CV score averages. The reported half-width
+            uses a Student's t distribution with one fewer degree of freedom
+            than the number of cross-validation scores.
 
         Returns
         ----------
@@ -910,7 +912,7 @@ class SequentialFeatureSelector(_BaseXComposition, MetaEstimatorMixin):
 
     def _calc_confidence(self, ary, confidence=0.95):
         std_err = scipy.stats.sem(ary)
-        bound = std_err * sp.stats.t._ppf((1 + confidence) / 2.0, len(ary))
+        bound = std_err * sp.stats.t.ppf((1 + confidence) / 2.0, len(ary) - 1)
         return bound, std_err
 
     def _check_fitted(self):
