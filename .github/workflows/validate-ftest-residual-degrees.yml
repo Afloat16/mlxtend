@@ -1,0 +1,88 @@
+name: Validate F-test residual degrees
+
+on:
+  push:
+    branches:
+      - validation/ftest-residual-degrees-20261115
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_ACTIONS_CI: true
+      OPENBLAS_NUM_THREADS: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 0e4bf6a4e44b861cac7c136e45324a77f0ee1b24
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+      - name: Install frozen development environment
+        run: uv sync --frozen --group dev --python 3.11
+      - name: Show source and versions
+        run: |
+          git rev-parse HEAD
+          uv run --group dev python -c "import sys,numpy,pandas,scipy,sklearn; print(sys.version); print('NumPy',numpy.__version__,'pandas',pandas.__version__,'SciPy',scipy.__version__,'sklearn',sklearn.__version__)"
+      - name: Verify the same regressions fail on unchanged production source
+        run: |
+          uv run --group dev python - <<'PY'
+          from pathlib import Path
+          import subprocess
+
+          path = Path("mlxtend/evaluate/f_test.py")
+          fixed = path.read_bytes()
+          base = subprocess.check_output(
+              ["git", "show", "1aee767ef57b84a8191511a08955c583b65de382:" + str(path)]
+          )
+          try:
+              path.write_bytes(base)
+              run = subprocess.run(
+                  ["python", "-m", "pytest",
+                   "mlxtend/evaluate/tests/test_ftest_degrees_of_freedom.py",
+                   "-q", "--tb=short"],
+                  capture_output=True, text=True
+              )
+              print(run.stdout)
+              print(run.stderr)
+              if run.returncode != 1 or "ERROR" in run.stdout:
+                  raise SystemExit("Expected failing assertions without collection errors")
+          finally:
+              path.write_bytes(fixed)
+          PY
+      - name: Run evaluation tests
+        run: uv run --group dev python -m pytest mlxtend/evaluate -q
+      - name: Check changed Python style
+        run: |
+          uv run --group dev python -m black --target-version py311 --diff --check mlxtend/evaluate/f_test.py mlxtend/evaluate/tests/test_ftest_degrees_of_freedom.py
+          uv run --group dev python -m isort --check-only -p mlxtend --line-length 88 --multi-line 3 --profile black mlxtend/evaluate/f_test.py mlxtend/evaluate/tests/test_ftest_degrees_of_freedom.py
+          uv run --group dev python -m flake8 mlxtend/evaluate/f_test.py mlxtend/evaluate/tests/test_ftest_degrees_of_freedom.py
+          git diff --exit-code
+      - name: Verify documented example and paired-test discrepancy
+        run: |
+          uv run --group dev python - <<'PY'
+          import json
+          from pathlib import Path
+          import numpy as np
+          from scipy import stats
+          from mlxtend.evaluate import ftest
+
+          notebook = json.loads(Path("docs/sources/user_guide/evaluate/ftest.ipynb").read_text())
+          state = {}
+          cells = [cell for cell in notebook["cells"] if cell["cell_type"] == "code"]
+          for cell in cells[:2]:
+              exec("".join(cell["source"]), state)
+          assert f'{state["f"]:.3f}' == '3.873'
+          assert f'{state["p_value"]:.3f}' == '0.022'
+          first = np.array([1, 1, 1, 0])
+          second = np.zeros(4)
+          statistic, pvalue = ftest(np.ones(4), first, second)
+          print("Four samples:", statistic, pvalue)
+          print("Old denominator p:", stats.f.sf(statistic, 1, 4))
+          print("Paired t-test:", stats.ttest_rel(first, second))
+          PY
