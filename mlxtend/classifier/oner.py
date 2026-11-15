@@ -51,7 +51,9 @@ class OneRClassifier(BaseEstimator, ClassifierMixin):
         means the total error is 37, and the rules are
         "if feature value == 0 classify as 0"
         and "if feature value == 1 classify as 2".
-        (And classify as class 1 otherwise.)
+        (And classify as class 1 otherwise.) Unseen feature values use the
+        first sorted class without a rule, or the first fitted class when
+        every class has a rule.
 
     For usage examples, please see
     https://rasbt.github.io/mlxtend/user_guide/classifier/OneRClassifier/
@@ -75,7 +77,8 @@ class OneRClassifier(BaseEstimator, ClassifierMixin):
             n_features is the number of features.
 
         y : array-like, shape = [n_samples]
-            Target values.
+            Target class labels. Labels need not be consecutive nonnegative
+            integers; the original labels are retained in rules and predictions.
 
         Returns
         -------
@@ -94,7 +97,8 @@ class OneRClassifier(BaseEstimator, ClassifierMixin):
                 )
             break
 
-        n_class_labels = np.unique(y).shape[0]
+        self.class_labels_, y = np.unique(y, return_inverse=True)
+        n_class_labels = self.class_labels_.shape[0]
 
         def compute_class_counts(X, y, feature_index, feature_value):
             mask = X[:, feature_index] == feature_value
@@ -108,7 +112,6 @@ class OneRClassifier(BaseEstimator, ClassifierMixin):
             for feature_value in np.unique(X[:, feature_index]):
                 class_counts = compute_class_counts(X, y, feature_index, feature_value)
                 most_frequent_class = np.argmax(class_counts)
-                self.class_labels_ = np.unique(y)
 
                 # count all classes for that feature match
                 # except the most frequent one
@@ -126,7 +129,7 @@ class OneRClassifier(BaseEstimator, ClassifierMixin):
                     }
                 prediction_dict[feature_index]["rules (value: class)"][
                     feature_value
-                ] = most_frequent_class
+                ] = self.class_labels_[most_frequent_class]
                 prediction_dict[feature_index]["total error"] += error
 
             # get best feature (i.e., the feature with the lowest error)
@@ -203,7 +206,7 @@ class OneRClassifier(BaseEstimator, ClassifierMixin):
 
         rules = self.prediction_dict_["rules (value: class)"]
 
-        y_pred = np.zeros(X.shape[0], dtype=np.int_)
+        y_pred = np.full(X.shape[0], self.class_labels_[0], dtype=self.class_labels_.dtype)
 
         # Set up labels for those class labels in the
         # dataset for which no rule exists. We use the
@@ -212,11 +215,10 @@ class OneRClassifier(BaseEstimator, ClassifierMixin):
         for feature_value in rules:
             class_label = rules[feature_value]
             rule_labels.add(class_label)
-        other_label = set(self.class_labels_) - rule_labels
-        if len(other_label):
-            y_pred[:] = list(other_label)[0]
-        # else just use "np.zeros"; we could also change this to
-        #  self.class_labels_[-1]+1 in future
+        other_labels = [label for label in self.class_labels_ if label not in rule_labels]
+        if other_labels:
+            y_pred[:] = other_labels[0]
+        # If every class has a rule, use the first fitted class as the fallback.
 
         # classify all class labels for which rules exist
         for feature_value in rules:
