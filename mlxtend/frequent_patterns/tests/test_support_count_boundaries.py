@@ -9,18 +9,25 @@ from mlxtend.frequent_patterns import fpgrowth, fpmax, hmine
 
 def _transactions(case):
     if case == "quarter-hundred":
-        return pd.DataFrame(
-            [[True, True, False]] * 7 + [[False, False, True]] * 18,
-            columns=["A", "B", "C"],
-        ), 7 / 25
+        return (
+            pd.DataFrame(
+                [[True, True, False]] * 7 + [[False, False, True]] * 18,
+                columns=["A", "B", "C"],
+            ),
+            7 / 25,
+        )
     if case == "hundred":
-        return pd.DataFrame(
-            [[True, True, False]] * 7 + [[False, False, True]] * 93,
-            columns=["A", "B", "C"],
-        ), 7 / 100
-    return pd.DataFrame(
-        [[True, True], [True, False], [False, True]], columns=["A", "B"]
-    ), 1 / 3
+        return (
+            pd.DataFrame(
+                [[True, True, False]] * 7 + [[False, False, True]] * 93,
+                columns=["A", "B", "C"],
+            ),
+            7 / 100,
+        )
+    return (
+        pd.DataFrame([[True, True], [True, False], [False, True]], columns=["A", "B"]),
+        1 / 3,
+    )
 
 
 def _enumerated_itemsets(transactions, threshold, maximal):
