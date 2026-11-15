@@ -1,0 +1,222 @@
+{
+  "repository": "rasbt/mlxtend",
+  "fork": "Afloat16/mlxtend",
+  "base": "1aee767ef57b84a8191511a08955c583b65de382",
+  "prepared_improvements": 20,
+  "new_upstream_prs_created": 0,
+  "new_upstream_merges": 0,
+  "submission_status": "Production commits and exact-commit fork validations complete; full issue and PR prefills are in the per-item handoffs. Upstream API creation returned 403 and the browser fallback was unavailable.",
+  "items": [
+    {
+      "number": 1,
+      "title": "Preserve NumPy item identifiers in association rules",
+      "commit": "6dd107f2e41eba68e19454773b685d66632ba6fe",
+      "branch": "fix/association-rule-numpy-labels-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43664851871",
+      "baseline": "16 failed, 10 passed",
+      "fixed": "137 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/association-rule-labels-20261115/validation/association-rule-labels-handoff.json"
+    },
+    {
+      "number": 2,
+      "title": "Avoid integer overflow in Kmeans distance calculations",
+      "commit": "e319582813845e455ecdbf7173ae767d22ccd1f3",
+      "branch": "fix/kmeans-integer-distances-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43665368984",
+      "baseline": "6 failed, 12 passed",
+      "fixed": "69 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/kmeans-integer-distances-20261115/validation/kmeans-integer-distances-handoff.json"
+    },
+    {
+      "number": 3,
+      "title": "Keep Kmeans memberships consistent with the final centroids",
+      "commit": "af77d015061417682affbc3cd1556d1f38caccc6",
+      "branch": "fix/kmeans-final-assignments-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43665438210",
+      "baseline": "6 failed, 3 passed",
+      "fixed": "60 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/kmeans-final-assignments-20261115/validation/kmeans-final-assignments-handoff.json"
+    },
+    {
+      "number": 4,
+      "title": "Align frequent-pattern count thresholds with fractional support",
+      "commit": "5132989d5dc8963c9a1aeb358b50e5e9ac12b39b",
+      "branch": "fix/frequent-pattern-support-boundaries-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43666085386",
+      "baseline": "24 failed, 84 passed",
+      "fixed": "219 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/frequent-pattern-support-boundaries-20261115/validation/support-count-boundaries-handoff.json"
+    },
+    {
+      "number": 5,
+      "title": "Fix matching class weights in LDA between-class scatter",
+      "commit": "e6304e468872652771e55115d34347b29dba141d",
+      "branch": "fix/lda-between-class-weights-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43666870772",
+      "baseline": "12 failed, 1 passed",
+      "fixed": "85 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/lda-class-weights-20261115/validation/lda-class-weights-handoff.json"
+    },
+    {
+      "number": 6,
+      "title": "Preserve sample alignment for k-fold paired t-test inputs",
+      "commit": "92c3d3e0168023ec1ef0e0ca881e9c2b35606163",
+      "branch": "fix/kfold-positional-indexing-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43667124870",
+      "baseline": "13 failed, 6 passed",
+      "fixed": "173 passed, 2 skipped",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/kfold-positional-indexing-20261115/validation/kfold-positional-indexing-handoff.json"
+    },
+    {
+      "number": 7,
+      "title": "Match F-test p-values to the residual degrees of freedom",
+      "commit": "82d02b25ff470232eff19b056c45ff4651ed1c9a",
+      "branch": "fix/ftest-residual-degrees-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43667372536",
+      "baseline": "12 failed, 1 passed",
+      "fixed": "167 passed, 2 skipped",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/ftest-residual-degrees-20261115/validation/ftest-residual-degrees-handoff.json"
+    },
+    {
+      "number": 8,
+      "title": "Flatten multi-output stacking predictions into consistent meta-features",
+      "commit": "a45aa4a37ae27402c01050f63bb99d72dd8875cb",
+      "branch": "fix/stacking-multioutput-features-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43667825362",
+      "baseline": "34 failed, 12 passed",
+      "fixed": "100 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/stacking-multioutput-features-20261115/validation/stacking-multioutput-features-handoff.json"
+    },
+    {
+      "number": 9,
+      "title": "Retain original class labels in OneR rules and predictions",
+      "commit": "acff09cc0ddc0eec22e6c5db3078b03be0910e59",
+      "branch": "fix/oner-original-class-labels-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43668024784",
+      "baseline": "21 failed, 4 passed",
+      "fixed": "28 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/oner-original-class-labels-20261115/validation/oner-original-class-labels-handoff.json"
+    },
+    {
+      "number": 10,
+      "title": "Apply the one-standard-error rule to parsimonious SFS selection",
+      "commit": "b74231500a2eb39cd4d5936c10fec932b10f48c4",
+      "branch": "fix/sfs-one-standard-error-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43668596322",
+      "baseline": "10 failed, 8 passed",
+      "fixed": "63 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/sfs-one-standard-error-20261115/validation/sfs-one-standard-error-handoff.json"
+    },
+    {
+      "number": 11,
+      "title": "Avoid quadratic sample-space allocation in PCA SVD",
+      "commit": "0c658f8b938823e6f54f2d88f11145223bdbc53e",
+      "branch": "perf/pca-svd-sample-memory-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43668982683",
+      "baseline": "2 failed, 11 passed",
+      "fixed": "85 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/pca-svd-sample-memory-20261115/validation/pca-svd-sample-memory-handoff.json"
+    },
+    {
+      "number": 12,
+      "title": "Apply voting estimator replacements before nested parameter updates",
+      "commit": "d8c53d9a4c67015e4ef26c423aa4be5ee22bf38e",
+      "branch": "fix/vote-estimator-replacement-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43669391730",
+      "baseline": "18 failed, 2 passed",
+      "fixed": "36 passed, 1 warning",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/vote-estimator-replacement-20261115/validation/vote-estimator-replacement-handoff.json"
+    },
+    {
+      "number": 13,
+      "title": "Use n_scores minus one degrees of freedom for selector score intervals",
+      "commit": "1b1154e5e2094c959756d5dbeb64fba20b4fa241",
+      "branch": "fix/selector-confidence-degrees-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43669637697",
+      "baseline": "12 failed",
+      "fixed": "85 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/selector-confidence-degrees-20261115/validation/selector-confidence-degrees-handoff.json"
+    },
+    {
+      "number": 14,
+      "title": "Preserve input arrays during permutation importance",
+      "commit": "d0249101d8e5caef4eaea53fe0b61ff65671ded1",
+      "branch": "fix/permutation-input-preservation-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43670145324",
+      "baseline": "12 failed, 4 passed",
+      "fixed": "170 passed, 2 skipped, 91 warnings",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/permutation-input-preservation-20261115/validation/permutation-input-preservation-handoff.json"
+    },
+    {
+      "number": 15,
+      "title": "Center RBF kernel matrices with in-place mean subtraction",
+      "commit": "66c12792d9c765dea68a7606a27c373fefaab77a",
+      "branch": "perf/kernel-centering-memory-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43670246125",
+      "baseline": "1 failed, 12 passed",
+      "fixed": "85 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/kernel-centering-memory-20261115/validation/kernel-centering-memory-handoff.json"
+    },
+    {
+      "number": 16,
+      "title": "Ignore NaN candidate means when ranking sequential feature subsets",
+      "commit": "8e6351dc5fa7f295140d2b176701542002b2e2e7",
+      "branch": "fix/sfs-nan-candidate-ranking-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43671094612",
+      "baseline": "16 failed, 2 passed",
+      "fixed": "63 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/sfs-nan-candidate-ranking-20261115/validation/sfs-nan-candidate-ranking-handoff.json"
+    },
+    {
+      "number": 17,
+      "title": "Infer GroupTimeSeriesSplit fold counts before the first split",
+      "commit": "f83ea85645d634723a6764ae22f8bf1609032652",
+      "branch": "fix/group-time-series-split-count-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43671314498",
+      "baseline": "21 failed, 2 passed",
+      "fixed": "177 passed, 2 skipped, 91 warnings",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/group-time-series-split-count-20261115/validation/group-time-series-split-count-handoff.json"
+    },
+    {
+      "number": 18,
+      "title": "Preserve global maximality when limiting FPMax itemset lengths",
+      "commit": "4cd04ba60457a227b29402b7dbfbf9a6245b5ec3",
+      "branch": "fix/fpmax-length-maximality-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43672081892",
+      "baseline": "4 failed, 16 passed",
+      "fixed": "131 passed, 112 warnings",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/fpmax-length-maximality-20261115/validation/fpmax-length-maximality-handoff.json"
+    },
+    {
+      "number": 19,
+      "title": "Preserve cross-validation metadata routing across feature-selection workers",
+      "commit": "8060a7b6af13125cb57dfd0d9b46bdd75ec3daa5",
+      "branch": "fix/selector-cv-metadata-routing-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43671925488",
+      "baseline": "8 failed, 12 passed",
+      "fixed": "93 passed",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/selector-cv-metadata-routing-20261115/validation/selector-cv-metadata-routing-handoff.json"
+    },
+    {
+      "number": 20,
+      "title": "Resolve named stacking replacements before removing estimators",
+      "commit": "2aac2afe30499cb7d3ebd25f3e047d770d8233fd",
+      "branch": "fix/stacking-named-estimator-removal-20261115",
+      "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43672533517",
+      "baseline": "24 failed, 16 passed",
+      "fixed": "180 passed, 1 skipped, 24 warnings",
+      "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/stacking-named-estimator-removal-20261115/validation/stacking-named-estimator-removal-handoff.json"
+    }
+  ],
+  "integration": {
+    "run": "https://github.com/Afloat16/mlxtend/actions/runs/43672944243",
+    "workflow_commit": "7e52358495a52645f5ab4b15c9b8e1d386c6af85",
+    "combined_tree": "446a56229fd31b034699749c917db69de38a6461",
+    "passed": 1151,
+    "skipped": 3,
+    "warnings": 227,
+    "conflicts": 0,
+    "changed_python_files_checked": 44,
+    "handoff": "https://raw.githubusercontent.com/Afloat16/mlxtend/handoff/integration-20-patches-20261115/validation/integration-20-handoff.json"
+  }
+}

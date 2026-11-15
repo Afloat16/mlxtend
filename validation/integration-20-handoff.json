@@ -1,0 +1,341 @@
+{
+  "repository": "rasbt/mlxtend",
+  "fork": "Afloat16/mlxtend",
+  "base": "1aee767ef57b84a8191511a08955c583b65de382",
+  "workflow_commit": "7e52358495a52645f5ab4b15c9b8e1d386c6af85",
+  "workflow_url": "https://github.com/Afloat16/mlxtend/blob/7e52358495a52645f5ab4b15c9b8e1d386c6af85/.github/workflows/validate-20-patch-integration.yml",
+  "manifest_url": "https://github.com/Afloat16/mlxtend/blob/7e52358495a52645f5ab4b15c9b8e1d386c6af85/validation/integration-20-manifest.json",
+  "validation_run": "https://github.com/Afloat16/mlxtend/actions/runs/43672944243",
+  "result": {
+    "conclusion": "success",
+    "passed": 1151,
+    "skipped": 3,
+    "warnings": 227,
+    "changed_python_files_checked": 44,
+    "changed_files": 45,
+    "combined_tree": "446a56229fd31b034699749c917db69de38a6461"
+  },
+  "combined_tree_note": "Tree hash produced by git write-tree in the integration runner, not a remote commit. It is reproducible from the fixed base, ordered source commits and patch method below.",
+  "method": [
+    "Check out the fixed upstream base.",
+    "Fetch each of the 20 fixed production source SHAs in numbered order, verify its exact SHA, and reject any submission diff that changes .github/ files.",
+    "Compute each complete binary diff relative to the same base, excluding only docs/sources/CHANGELOG.md, whose independent changelog insertions remain in every standalone submission branch.",
+    "Apply each diff with git apply --3way --index. Abort and preserve conflict details on any failure; never select ours/theirs automatically.",
+    "Verify no unmerged paths, no unstaged changes, no excluded changelog modifications, and git diff --cached --check.",
+    "Run all existing and new tests in _base, classifier, cluster, evaluate, feature_extraction, feature_selection, frequent_patterns, regressor and utils using the frozen uv development environment.",
+    "Run Black, isort and Flake8 on all 44 changed Python files; verify the working tree still matches the staged integration.",
+    "Preserve the ordered manifest, each source patch, the combined patch, source/file SHA256 checksums, JUnit test results and style results as a CI artifact."
+  ],
+  "conflict_resolution": "None required: all 20 three-way applications succeeded without conflicts. No manual source changes or side-selection overrides were used.",
+  "shared_changes_verified": [
+    "Sequential selection: parsimonious standard error, confidence interval degrees, NaN candidate ranking and metadata-routing configuration.",
+    "Both stacking classifiers plus shared estimator composition, with voting replacement delegating to the updated helper.",
+    "Frequent-pattern support boundaries across FP-Growth, FPMax and HMine, combined with FPMax length-limited maximality.",
+    "Both independent Kmeans corrections and the remaining statistical, label, input-preservation and allocation regressions."
+  ],
+  "environment": {
+    "python": "3.11.18",
+    "numpy": "2.4.0",
+    "pandas": "2.3.3",
+    "scipy": "1.16.3",
+    "scikit_learn": "1.8.0",
+    "runner": "ubuntu-latest",
+    "dependencies": "uv sync --frozen --group dev --python 3.11"
+  },
+  "artifact": {
+    "name": "mlxtend-20-patch-integration",
+    "id": 14145302101,
+    "url": "https://github.com/Afloat16/mlxtend/actions/runs/43672944243/artifacts/14145302101",
+    "digest": "sha256:1723178afcd385d8685ffdce5b65409784411ba4e5dea63f5d9f88b429adfac2",
+    "expires_at": "2027-02-13T03:34:04Z"
+  },
+  "application_report": {
+    "base": "1aee767ef57b84a8191511a08955c583b65de382",
+    "excluded_paths": [
+      "docs/sources/CHANGELOG.md"
+    ],
+    "applied": [
+      {
+        "number": 1,
+        "commit": "6dd107f2e41eba68e19454773b685d66632ba6fe",
+        "branch": "fix/association-rule-numpy-labels-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43664851871",
+        "paths": [
+          "mlxtend/frequent_patterns/association_rules.py",
+          "mlxtend/frequent_patterns/tests/test_association_rule_labels.py"
+        ],
+        "patch_sha256": "816c997986d55284c275056a5c40d59f3b67bcc533a6a56b571e71ace6a4679d"
+      },
+      {
+        "number": 2,
+        "commit": "e319582813845e455ecdbf7173ae767d22ccd1f3",
+        "branch": "fix/kmeans-integer-distances-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43665368984",
+        "paths": [
+          "mlxtend/cluster/kmeans.py",
+          "mlxtend/cluster/tests/test_kmeans_integer_distances.py"
+        ],
+        "patch_sha256": "5163b3854aa56850f6f6a79540f67eeabe476353b257650a44b719a80a813293"
+      },
+      {
+        "number": 3,
+        "commit": "af77d015061417682affbc3cd1556d1f38caccc6",
+        "branch": "fix/kmeans-final-assignments-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43665438210",
+        "paths": [
+          "mlxtend/cluster/kmeans.py",
+          "mlxtend/cluster/tests/test_kmeans_final_assignments.py"
+        ],
+        "patch_sha256": "5f2735773890ec9a0d79261604fd30a49603e6c8e8571092e95e022fb311e006"
+      },
+      {
+        "number": 4,
+        "commit": "5132989d5dc8963c9a1aeb358b50e5e9ac12b39b",
+        "branch": "fix/frequent-pattern-support-boundaries-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43666085386",
+        "paths": [
+          "mlxtend/frequent_patterns/fpcommon.py",
+          "mlxtend/frequent_patterns/fpgrowth.py",
+          "mlxtend/frequent_patterns/fpmax.py",
+          "mlxtend/frequent_patterns/hmine.py",
+          "mlxtend/frequent_patterns/tests/test_support_count_boundaries.py"
+        ],
+        "patch_sha256": "6a4681897117bc49f4ebc639eab8385e2f0d9f738745d29ea5942b0ddaa15542"
+      },
+      {
+        "number": 5,
+        "commit": "e6304e468872652771e55115d34347b29dba141d",
+        "branch": "fix/lda-between-class-weights-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43666870772",
+        "paths": [
+          "mlxtend/feature_extraction/linear_discriminant_analysis.py",
+          "mlxtend/feature_extraction/tests/test_lda_class_weights.py",
+          "mlxtend/feature_extraction/tests/test_linear_discriminant_analysis.py"
+        ],
+        "patch_sha256": "025607edc2d7a8b7884792622766e98f68b03fd34b94eefbf233f7f87cf765ed"
+      },
+      {
+        "number": 6,
+        "commit": "92c3d3e0168023ec1ef0e0ca881e9c2b35606163",
+        "branch": "fix/kfold-positional-indexing-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43667124870",
+        "paths": [
+          "mlxtend/evaluate/tests/test_kfold_container_indexing.py",
+          "mlxtend/evaluate/ttest.py"
+        ],
+        "patch_sha256": "2bf322a73e739f42d81abec0d6514af609625fe2ef93dc62398123e615ffc901"
+      },
+      {
+        "number": 7,
+        "commit": "82d02b25ff470232eff19b056c45ff4651ed1c9a",
+        "branch": "fix/ftest-residual-degrees-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43667372536",
+        "paths": [
+          "docs/sources/user_guide/evaluate/ftest.ipynb",
+          "mlxtend/evaluate/f_test.py",
+          "mlxtend/evaluate/tests/test_ftest_degrees_of_freedom.py"
+        ],
+        "patch_sha256": "dfe14ce9bf181e906da7a0302991633737e7f3de3ba08674f29e344215cb0cec"
+      },
+      {
+        "number": 8,
+        "commit": "a45aa4a37ae27402c01050f63bb99d72dd8875cb",
+        "branch": "fix/stacking-multioutput-features-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43667825362",
+        "paths": [
+          "mlxtend/classifier/_base_classification.py",
+          "mlxtend/classifier/stacking_classification.py",
+          "mlxtend/classifier/stacking_cv_classification.py",
+          "mlxtend/classifier/tests/test_stacking_multioutput_features.py"
+        ],
+        "patch_sha256": "914ab5050b5f89924970873eda448ae4a5dc4e3ab67b80003a0fe72a927673b1"
+      },
+      {
+        "number": 9,
+        "commit": "acff09cc0ddc0eec22e6c5db3078b03be0910e59",
+        "branch": "fix/oner-original-class-labels-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43668024784",
+        "paths": [
+          "mlxtend/classifier/oner.py",
+          "mlxtend/classifier/tests/test_oner_class_labels.py"
+        ],
+        "patch_sha256": "4551f15dea54c208112077c2bca44b85e170ede727f826f76b4adf75ca9b96b3"
+      },
+      {
+        "number": 10,
+        "commit": "b74231500a2eb39cd4d5936c10fec932b10f48c4",
+        "branch": "fix/sfs-one-standard-error-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43668596322",
+        "paths": [
+          "mlxtend/feature_selection/sequential_feature_selector.py",
+          "mlxtend/feature_selection/tests/test_parsimonious_standard_error.py",
+          "mlxtend/feature_selection/tests/test_sequential_feature_selector.py"
+        ],
+        "patch_sha256": "62ca0794cac2cb404a1614897796f4f5d57d98b88abd4b9a08b48df909ad4b21"
+      },
+      {
+        "number": 11,
+        "commit": "0c658f8b938823e6f54f2d88f11145223bdbc53e",
+        "branch": "perf/pca-svd-sample-memory-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43668982683",
+        "paths": [
+          "mlxtend/feature_extraction/principal_component_analysis.py",
+          "mlxtend/feature_extraction/tests/test_pca_svd_memory.py"
+        ],
+        "patch_sha256": "83bcceaa56637daf6aeaa3bc8852dd8e717613b08495b32450c05c390275848b"
+      },
+      {
+        "number": 12,
+        "commit": "d8c53d9a4c67015e4ef26c423aa4be5ee22bf38e",
+        "branch": "fix/vote-estimator-replacement-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43669391730",
+        "paths": [
+          "mlxtend/classifier/ensemble_vote.py",
+          "mlxtend/classifier/tests/test_vote_estimator_replacement.py"
+        ],
+        "patch_sha256": "90d3f0c147de9c034d18f7fabfb2f1c66697c88887f6f23f0f658e7cc3cca7cf"
+      },
+      {
+        "number": 13,
+        "commit": "1b1154e5e2094c959756d5dbeb64fba20b4fa241",
+        "branch": "fix/selector-confidence-degrees-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43669637697",
+        "paths": [
+          "mlxtend/feature_selection/exhaustive_feature_selector.py",
+          "mlxtend/feature_selection/sequential_feature_selector.py",
+          "mlxtend/feature_selection/tests/test_selector_confidence_intervals.py"
+        ],
+        "patch_sha256": "94f82e096baffbc8a279a2ba61038d59cce0c3517ed114a729a0bd0e6a502ee0"
+      },
+      {
+        "number": 14,
+        "commit": "d0249101d8e5caef4eaea53fe0b61ff65671ded1",
+        "branch": "fix/permutation-input-preservation-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43670145324",
+        "paths": [
+          "mlxtend/evaluate/feature_importance.py",
+          "mlxtend/evaluate/tests/test_permutation_input_preservation.py"
+        ],
+        "patch_sha256": "5cf7f80f681ab4646808037855f689a26c97b3b8e6f4c46c67cba676243c3e25"
+      },
+      {
+        "number": 15,
+        "commit": "66c12792d9c765dea68a7606a27c373fefaab77a",
+        "branch": "perf/kernel-centering-memory-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43670246125",
+        "paths": [
+          "mlxtend/feature_extraction/rbf_kernel_pca.py",
+          "mlxtend/feature_extraction/tests/test_kernel_centering_memory.py"
+        ],
+        "patch_sha256": "176f6a0309ac31a498eb1f4b1a70ee7d192313bc82b8f24ee4447241644cd08e"
+      },
+      {
+        "number": 16,
+        "commit": "8e6351dc5fa7f295140d2b176701542002b2e2e7",
+        "branch": "fix/sfs-nan-candidate-ranking-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43671094612",
+        "paths": [
+          "mlxtend/feature_selection/sequential_feature_selector.py",
+          "mlxtend/feature_selection/tests/test_sfs_nan_ranking.py"
+        ],
+        "patch_sha256": "246a51342aabacffd6064944c7969839c6aba5bdaa7fae73c6566836bb36090c"
+      },
+      {
+        "number": 17,
+        "commit": "f83ea85645d634723a6764ae22f8bf1609032652",
+        "branch": "fix/group-time-series-split-count-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43671314498",
+        "paths": [
+          "mlxtend/evaluate/tests/test_time_series_count.py",
+          "mlxtend/evaluate/time_series.py"
+        ],
+        "patch_sha256": "eb764bec77af57ae2ec336f5d46bd9aa81bd92a9accf061f43be9c7fa73d1fed"
+      },
+      {
+        "number": 18,
+        "commit": "4cd04ba60457a227b29402b7dbfbf9a6245b5ec3",
+        "branch": "fix/fpmax-length-maximality-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43672081892",
+        "paths": [
+          "mlxtend/frequent_patterns/fpmax.py",
+          "mlxtend/frequent_patterns/tests/test_fpmax_length_filter.py"
+        ],
+        "patch_sha256": "432f7081889dd07c30455d2300b609d4224b7d9b20b3675aa1bad583f1a9b6a4"
+      },
+      {
+        "number": 19,
+        "commit": "8060a7b6af13125cb57dfd0d9b46bdd75ec3daa5",
+        "branch": "fix/selector-cv-metadata-routing-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43671925488",
+        "paths": [
+          "mlxtend/feature_selection/exhaustive_feature_selector.py",
+          "mlxtend/feature_selection/sequential_feature_selector.py",
+          "mlxtend/feature_selection/tests/test_selector_metadata_routing.py",
+          "mlxtend/feature_selection/utilities.py"
+        ],
+        "patch_sha256": "8b647c4e8273ccaae46dd01a3f49cd44c4877132253169a5a9c37a2eb7f6ce76"
+      },
+      {
+        "number": 20,
+        "commit": "2aac2afe30499cb7d3ebd25f3e047d770d8233fd",
+        "branch": "fix/stacking-named-estimator-removal-20261115",
+        "standalone_validation": "https://github.com/Afloat16/mlxtend/actions/runs/43672533517",
+        "paths": [
+          "mlxtend/utils/base_compostion.py",
+          "mlxtend/utils/tests/test_estimator_removal.py"
+        ],
+        "patch_sha256": "f94a94429104dbd402a6bd687d9669a78de2ce03e128a9711268823713003e7e"
+      }
+    ],
+    "conflicts": [],
+    "combined_tree": "446a56229fd31b034699749c917db69de38a6461",
+    "files": {
+      "docs/sources/user_guide/evaluate/ftest.ipynb": "319a8928c2beb96783a2029b236c3700afee7882f60c93c736ae3be500df8bfe",
+      "mlxtend/classifier/_base_classification.py": "44c360f87299e59c2ca29b8f3971b218afcb7f6d51f6c419e0a0d54dd515355d",
+      "mlxtend/classifier/ensemble_vote.py": "b872f11dee17060c2c0c6265adda0cec84f2f1661fae78ca083a3233cfe81982",
+      "mlxtend/classifier/oner.py": "20feda897c1ddae4def6a68aedc063521c91b26d50dfdf70a930b0bd5ce294b7",
+      "mlxtend/classifier/stacking_classification.py": "a5fb69d71820e4f47273e1c8613c31965042b27866ce9532b74131da4ac0eeb3",
+      "mlxtend/classifier/stacking_cv_classification.py": "75eab497ccdeef006115d33d7b8c301b5dfd098e04a2d8750a62979ce014bf0e",
+      "mlxtend/classifier/tests/test_oner_class_labels.py": "f4e4b2bb0f7c0c3e3f96fd6486c2d22692664bc723e948396ef701b33193cf56",
+      "mlxtend/classifier/tests/test_stacking_multioutput_features.py": "b3b114450ceb56f1bd8637be79f5e8925c19fe58e1c8d49d23fc0631a946c95b",
+      "mlxtend/classifier/tests/test_vote_estimator_replacement.py": "797c121f11a1618112fb986f2a6f5b21a9fa0583198d47231547f806b66db34f",
+      "mlxtend/cluster/kmeans.py": "7c55a486540a4e7393ed3c40d59ebcb3e60647540bbf74d49d50059509fec7d7",
+      "mlxtend/cluster/tests/test_kmeans_final_assignments.py": "5ff0dc45d272b87e8ff22342ddd95f07011ed1abab9b8c23a8384505b41f007a",
+      "mlxtend/cluster/tests/test_kmeans_integer_distances.py": "63427d7d83e2a32d1abb9a106a5e92defd342eda30e7a6b26ede2778ca16e66c",
+      "mlxtend/evaluate/f_test.py": "5618ff6ac49ffde299b706e5a873d5d20e190a1f773ad65edf3547d587d1a2e1",
+      "mlxtend/evaluate/feature_importance.py": "cc67dc82765b886084addee921a32bf946635be4ee6ff5abf039447bd7658dc0",
+      "mlxtend/evaluate/tests/test_ftest_degrees_of_freedom.py": "c99c00eedff3dc0a36208e6eea81c2c0a4f778d5e5ce68916556e52f285c6aac",
+      "mlxtend/evaluate/tests/test_kfold_container_indexing.py": "65aadd59830b4b2b4a0c9b46bbf740c68d651e3f94ad84ce02f56e6526723815",
+      "mlxtend/evaluate/tests/test_permutation_input_preservation.py": "c300d3f89b60d2d12669d850b20ff46e80e995963fe3b6efcdd205b8081a33d9",
+      "mlxtend/evaluate/tests/test_time_series_count.py": "f30db38e1a3ca19bf4031a47906c6713172bbfd4238cda32cb16b6f6f50510b9",
+      "mlxtend/evaluate/time_series.py": "05fcd6e94b5fb4b356983a888ae45df35c5b04208049777bdefd4db45fdea6be",
+      "mlxtend/evaluate/ttest.py": "4e11b4a3c793ffe3c6ec3863c35d98aece396f19708b75e4edceaf8523b33544",
+      "mlxtend/feature_extraction/linear_discriminant_analysis.py": "b9d6230eaad2d66404e4098da73d6613f843ff3383321cf76088e3c890b890d8",
+      "mlxtend/feature_extraction/principal_component_analysis.py": "0cb7826a75160b7282998ca5ad6167225687fda14017c2acce882968bf310633",
+      "mlxtend/feature_extraction/rbf_kernel_pca.py": "3c134cc5f0780e5dd75e5558131db68b762283ad4acce1664587ac7f7eed4e37",
+      "mlxtend/feature_extraction/tests/test_kernel_centering_memory.py": "67476026df1c6a47d7ee29102ab471afa06f5b14ca69de23ae120c51be549a91",
+      "mlxtend/feature_extraction/tests/test_lda_class_weights.py": "1e65b03d8e8ff4b677b712ffab01b2c952fd9759f13f95f4be1179b71642f636",
+      "mlxtend/feature_extraction/tests/test_linear_discriminant_analysis.py": "7a1749849bd2f3d6dd9667a637fdb671d60c3ada4eb91556b7498d1c9df4ef92",
+      "mlxtend/feature_extraction/tests/test_pca_svd_memory.py": "0b980a3a9ac328df2db99174a771006c36cbac6e80e4f8b1606dbe74af7f9d98",
+      "mlxtend/feature_selection/exhaustive_feature_selector.py": "ba263e73a9bb702903a32265906d5df0084d8039e7297afff21c761eef21118d",
+      "mlxtend/feature_selection/sequential_feature_selector.py": "dd29f322fbbc73e14f0753ff0b1d06821c00675b9de9925ce5374c2c391baefb",
+      "mlxtend/feature_selection/tests/test_parsimonious_standard_error.py": "abeef3788d276bc87f54d8461d367e26277032655be2b410c47a4a7e48835880",
+      "mlxtend/feature_selection/tests/test_selector_confidence_intervals.py": "37fd4efd1cd7d1e30143f1d419ef595cfaa2ff4e4a604991ffd7a82ac8e57172",
+      "mlxtend/feature_selection/tests/test_selector_metadata_routing.py": "1e040c5433591389705d8fa24535255c15c379926ce6a5e45d83199652a8f296",
+      "mlxtend/feature_selection/tests/test_sequential_feature_selector.py": "1e7bd035d1e9fd4f5c9f2a3d607d3e775589fa47bdac8ffedb878c244ebf79bb",
+      "mlxtend/feature_selection/tests/test_sfs_nan_ranking.py": "0d1646ccc4cbf8ce55c367cb766b0f75a2ccb66be4489b1e8b57fe7da641b42e",
+      "mlxtend/feature_selection/utilities.py": "b810bada6e011eff109460da166e18cac854d96e9b8f67756936a71a32b539e4",
+      "mlxtend/frequent_patterns/association_rules.py": "9645fe6485f57d1ed1d351b3542e8fd9086611f60ecfd3a59a4a3c1d3793e4b7",
+      "mlxtend/frequent_patterns/fpcommon.py": "a2022109606d6eebe5ca4900b90dc57cde74a8090bc8f9e1ab43ec2fe1c1a958",
+      "mlxtend/frequent_patterns/fpgrowth.py": "094bb7848db1bd03b35e27ad854a3b08529ead5b1f40ba65c718e562d4869f2c",
+      "mlxtend/frequent_patterns/fpmax.py": "2462eaad798411262a2dc2b2e27e53288cce845a938c8790482b144f5ed41e13",
+      "mlxtend/frequent_patterns/hmine.py": "6db4342fe0838ca758ecf59d3e3e329bc81371bdabc677c0c0e129756c6e44c9",
+      "mlxtend/frequent_patterns/tests/test_association_rule_labels.py": "9d15610b51fad8b2c826d58ade301a899485f07d9c446ed2a7e97b7bbbf5e4f9",
+      "mlxtend/frequent_patterns/tests/test_fpmax_length_filter.py": "0f9d7f90dd511bc2b44313b6d5469fb4ca025bfe99619eabb4a9a435d95f54eb",
+      "mlxtend/frequent_patterns/tests/test_support_count_boundaries.py": "1d03fff444747a3050d921127acc0425198170cb31dd3d426c6a5f31d32b970a",
+      "mlxtend/utils/base_compostion.py": "5a571ed8d0ddae181945080c45496e7caceb3c1ccc3ce59c644eb03ef49a7df9",
+      "mlxtend/utils/tests/test_estimator_removal.py": "2c661b44bc34d27d7936d5c1669e0e1d7aa591f6a4139e8609ae84ed7dade28c"
+    }
+  },
+  "counting": "This integration is verification of the same 20 independent improvements, not a 21st contribution. It does not create an upstream PR or merge and does not modify any standalone submission branch."
+}
