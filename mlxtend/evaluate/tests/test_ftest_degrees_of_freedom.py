@@ -4,7 +4,6 @@ from scipy import stats
 
 from mlxtend.evaluate import ftest
 
-
 CORRECT = np.array(
     [
         [1, 0, 0, 1],
