@@ -46,6 +46,9 @@ def fpgrowth(
 
     null_values : bool (default: False)
       In case there are null values as NaNs in the original input data
+      Support excludes transactions missing any item in the itemset.
+      Such itemsets can have infrequent subsets, so mining may retain more
+      candidates. Use `max_len` to limit the search depth when needed.
 
     use_colnames : bool (default: False)
       If true, uses the DataFrames' column names in the returned DataFrame
@@ -90,6 +93,12 @@ def fpgrowth(
 
     tree, disabled, _ = fpc.setup_fptree(df, min_support, null_values=null_values)
     minsup = math.ceil(min_support * len(df.index))  # min support as count
+    if null_values:
+        complete_rows = int((disabled != 1).all(axis=1).sum())
+        if complete_rows < len(df.index):
+            # A lower bound on every itemset's required count. Round down
+            # conservatively; final filtering uses its own observed rows.
+            minsup = max(1, math.floor(min_support * complete_rows))
     generator = fpg_step(tree, minsup, colname_map, max_len, verbose)
 
     return fpc.generate_itemsets(

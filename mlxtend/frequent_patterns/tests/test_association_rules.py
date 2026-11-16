@@ -59,7 +59,7 @@ def test_default():
     res_df["antecedents"] = res_df["antecedents"].apply(lambda x: str(frozenset(sorted(x))))
     res_df["consequents"] = res_df["consequents"].apply(lambda x: str(frozenset(sorted(x))))
     res_df = res_df.round(3)
-    
+
     res_df.sort_values(columns_ordered, inplace=True)
     res_df.reset_index(inplace=True, drop=True)
 
@@ -267,6 +267,20 @@ def test_nullability():
                 0.833,
             ],
             [(5,), (3,), 1.0, 1.0, 1.0, 1.0, 1.0, 0.8, 0.0, np.inf, 0, 1.0, 0.0, 1.0],
+            # Item 8 has support 2/4, but its combinations with 3 and 5 have
+            # support 2/3. These ten rules were previously pruned incorrectly.
+            # fmt: off
+            [(8,), (3,), 0.5, 1.0, 0.667, 1.0, 1.0, 0.6, 0.167, np.inf, 0.5, 0.8, 0.0, 0.833],
+            [(8,), (5,), 0.5, 1.0, 0.667, 1.0, 1.0, 0.6, 0.167, np.inf, 0.5, 0.8, 0.0, 0.833],
+            [(3,), (8,), 1.0, 0.5, 0.667, 0.667, 1.333, 0.6, 0.167, 1.5, 0.0, 0.8, 0.333, 0.833],
+            [(5,), (8,), 1.0, 0.5, 0.667, 0.667, 1.333, 0.6, 0.167, 1.5, 0.0, 0.8, 0.333, 0.833],
+            [(8, 3), (5,), 0.667, 1.0, 0.667, 1.0, 1.0, 0.6, 0.0, np.inf, 0.0, 0.667, 0.0, 0.833],
+            [(8, 5), (3,), 0.667, 1.0, 0.667, 1.0, 1.0, 0.6, 0.0, np.inf, 0.0, 0.667, 0.0, 0.833],
+            [(3, 5), (8,), 1.0, 0.5, 0.667, 0.667, 1.333, 0.6, 0.167, 1.5, 0.0, 0.8, 0.333, 0.833],
+            [(8,), (3, 5), 0.5, 1.0, 0.667, 1.0, 1.0, 0.6, 0.167, np.inf, 0.5, 0.8, 0.0, 0.833],
+            [(3,), (8, 5), 1.0, 0.667, 0.667, 0.667, 1.0, 0.6, 0.0, 1.0, 0.0, 0.667, 0.0, 0.833],
+            [(5,), (8, 3), 1.0, 0.667, 0.667, 0.667, 1.0, 0.6, 0.0, 1.0, 0.0, 0.667, 0.0, 0.833],
+            # fmt: on
         ],
         columns=columns_ordered,
     )

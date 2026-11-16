@@ -53,6 +53,9 @@ def association_rules(
 
     df_orig : pandas DataFrame (default: None)
       DataFrame with original input data. Only provided when null_values exist
+      Subset supports missing from `df` are computed from their observed rows
+      in `df_orig`, since a frequent itemset can have an infrequent subset
+      when missing values are excluded from support denominators.
 
     num_itemsets : int (default: 1)
       Number of transactions in original input data (df_orig)
@@ -266,6 +269,10 @@ def association_rules(
             disabled.columns = cols
             df_orig = df_orig.rename(columns=dict(zip(df_orig.columns, cols)))
 
+    # Keep recovered subset supports separate from the itemsets that generate
+    # rules, since missing-value support is not downward closed.
+    support_lookup = frequent_items_dict.copy() if null_values else frequent_items_dict
+
     # iterate over all frequent itemsets
     for k in frequent_items_dict.keys():
         sAC = frequent_items_dict[k]
@@ -285,8 +292,17 @@ def association_rules(
 
                 else:
                     try:
-                        sA = frequent_items_dict[antecedent]
-                        sC = frequent_items_dict[consequent]
+                        if null_values:
+                            for subset in (antecedent, consequent):
+                                if subset not in support_lookup:
+                                    observed = df_orig.loc[:, list(subset)].dropna()
+                                    support_lookup[subset] = (
+                                        observed.eq(1).all(axis=1).mean()
+                                        if len(observed)
+                                        else 0
+                                    )
+                        sA = support_lookup[antecedent]
+                        sC = support_lookup[consequent]
 
                         # if the input dataframe is complete
                         if not null_values:
