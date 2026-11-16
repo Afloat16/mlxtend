@@ -128,11 +128,16 @@ class Kmeans(_BaseModel, _Cluster, _IterativeModel):
         return self
 
     def _get_cluster_idx(self, X, centroids):
-        for sample_idx, sample in enumerate(X):
-            # dist = [euclidean(sample, c) for c in self.centroids_]
-            dist = np.sqrt(np.sum(np.square(sample - self.centroids_), axis=1))
-
-            yield np.argmin(dist)
+        # Keep the coordinate-difference buffer near 1 MiB, or one sample
+        # when a single set of centroid differences already exceeds that.
+        itemsize = np.result_type(X.dtype, self.centroids_.dtype).itemsize
+        bytes_per_sample = max(1, self.centroids_.size * itemsize)
+        batch_size = max(1, (1024 * 1024) // bytes_per_sample)
+        for start in range(0, X.shape[0], batch_size):
+            differences = X[start : start + batch_size, None, :] - self.centroids_
+            np.square(differences, out=differences)
+            dist = np.sqrt(np.sum(differences, axis=2))
+            yield from np.argmin(dist, axis=1)
 
     def _predict(self, X):
         """Predict cluster labels of X.
