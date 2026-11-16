@@ -141,19 +141,29 @@ def mcnemar_tables(y_target, *y_model_predictions):
     if num_models < 2:
         raise ValueError("Provide at least 2 model prediction arrays.")
 
+    # Compare each model with the target once. Packed correctness masks use
+    # one bit per observation, with zero padding in the final byte.
+    packed_correct = []
+    correct_counts = []
+    for prediction in y_model_predictions:
+        correct = y_target == prediction
+        packed_correct.append(np.packbits(correct))
+        correct_counts.append(int(np.count_nonzero(correct)))
+
     tables = {}
 
     for comb in combinations(range(num_models), 2):
         tb = np.zeros((2, 2))
-        model1_vs_true = (y_target == y_model_predictions[comb[0]]).astype(int)
-        model2_vs_true = (y_target == y_model_predictions[comb[1]]).astype(int)
-        plus_true = model1_vs_true + model2_vs_true
-        minus_true = model1_vs_true - model2_vs_true
+        both_correct = int(
+            np.bitwise_count(packed_correct[comb[0]] & packed_correct[comb[1]]).sum()
+        )
+        first_correct = correct_counts[comb[0]]
+        second_correct = correct_counts[comb[1]]
 
-        tb[0, 0] = np.sum(plus_true == 2)
-        tb[0, 1] = np.sum(minus_true == 1)
-        tb[1, 0] = np.sum(minus_true == -1)
-        tb[1, 1] = np.sum(plus_true == 0)
+        tb[0, 0] = both_correct
+        tb[0, 1] = first_correct - both_correct
+        tb[1, 0] = second_correct - both_correct
+        tb[1, 1] = y_target.shape[0] - first_correct - second_correct + both_correct
 
         name_str = "model_%s vs model_%s" % (comb[0], comb[1])
         tables[name_str] = tb
