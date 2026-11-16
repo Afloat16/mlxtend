@@ -35,6 +35,7 @@ class RBFKernelPCA(_BaseModel):
        Eigenvectors in sorted order.
     X_projected_ : array-like, shape=[n_samples, n_components]
        Training samples projected along the component axes.
+       Components with numerically zero kernel variance are projected to zero.
 
     Examples
     -----------
@@ -78,9 +79,18 @@ class RBFKernelPCA(_BaseModel):
             n_components = self.n_components
         kernel_mat = self._kernel_matrix(X=X, gamma=self.gamma)
         self.e_vals_, self.e_vecs_ = self._eigendecom(kernel_mat)
+        # The uncentered RBF kernel has unit diagonal. Keep that scale when
+        # all centered eigenvalues are only roundoff from a constant kernel.
+        self._eigenvalue_tol_ = (
+            np.finfo(self.e_vals_.dtype).eps
+            * kernel_mat.shape[0]
+            * max(1.0, self.e_vals_[0])
+        )
         self.X_projected_ = self._projection_matrix(
             eig_vecs=self.e_vecs_, n_components=n_components
         )
+        nonzero = self.e_vals_[:n_components] > self._eigenvalue_tol_
+        self.X_projected_[:, ~nonzero] = 0
         if self.copy_X:
             self.X_ = X.copy()
         else:
@@ -114,7 +124,15 @@ class RBFKernelPCA(_BaseModel):
         e_vecs = self._projection_matrix(
             eig_vecs=self.e_vecs_, n_components=self.n_components
         )
-        return K.T.dot(e_vecs / self.e_vals_[: e_vecs.shape[1]])
+        eigenvalues = self.e_vals_[: e_vecs.shape[1]]
+        weights = np.zeros_like(e_vecs)
+        np.divide(
+            e_vecs,
+            eigenvalues,
+            out=weights,
+            where=eigenvalues > self._eigenvalue_tol_,
+        )
+        return K.T.dot(weights)
 
     def _kernel_matrix(self, X, gamma):
         # Calculating the squared Euclidean distances for every pair of points

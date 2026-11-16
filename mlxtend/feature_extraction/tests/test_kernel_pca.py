@@ -35,7 +35,8 @@ def test_default_0components():
 def test_proj():
     pca = KPCA(n_components=2)
     pca.fit(X1[:2])
-    exp = np.array([[-0.71, -0.71], [0.71, -0.71]])
+    # Two centered samples have only one nonzero kernel component.
+    exp = np.array([[-0.71, 0.0], [0.71, 0.0]])
     assert_almost_equal(pca.X_projected_, exp, decimal=2)
 
 
