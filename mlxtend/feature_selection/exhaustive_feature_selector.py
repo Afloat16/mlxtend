@@ -527,7 +527,7 @@ class ExhaustiveFeatureSelector(BaseEstimator, MetaEstimatorMixin):
 
         """
         self._check_fitted()
-        X_, _ = _preprocess(X)
+        X_, _ = _preprocess(X, copy=False)
         return X_[:, self.best_idx_]
 
     def fit_transform(self, X, y, groups=None, **fit_params):

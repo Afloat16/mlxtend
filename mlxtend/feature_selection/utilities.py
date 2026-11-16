@@ -114,7 +114,7 @@ def _calc_score(
     return indices, scores
 
 
-def _preprocess(X):
+def _preprocess(X, *, copy=True):
     """
     Check if X is a DataFrame or not, and returns numpy ndarray and name of features.
 
@@ -122,6 +122,10 @@ def _preprocess(X):
     ----------
     X : DataFrame or numpy.ndarray
         A DataFrame or a 2D numpy.ndarray
+
+    copy : bool (default: True)
+        Copy the input data. If False, the result may share data with X.
+        This is used before column indexing, which creates its own output.
 
     Returns
     -------
@@ -137,11 +141,11 @@ def _preprocess(X):
 
     if type(X).__name__ == "DataFrame":
         features_names = list(X.columns)
-        X_ = X.to_numpy(copy=True)
+        X_ = X.to_numpy(copy=copy)
     else:
         # it is numpy array
         features_names = None
-        X_ = X.copy()
+        X_ = X.copy() if copy else X
 
     return X_, features_names
 

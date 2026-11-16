@@ -841,7 +841,7 @@ class SequentialFeatureSelector(_BaseXComposition, MetaEstimatorMixin):
 
         """
         self._check_fitted()
-        X_, _ = _preprocess(X)
+        X_, _ = _preprocess(X, copy=False)
         return X_[:, self.k_feature_idx_]
 
     def fit_transform(self, X, y, groups=None, **fit_params):
