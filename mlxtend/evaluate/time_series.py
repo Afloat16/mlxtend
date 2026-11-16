@@ -20,15 +20,15 @@ class GroupTimeSeriesSplit:
     Parameters
     ----------
     test_size : int
-        Size of test dataset.
+        Positive number of groups in each test dataset.
     train_size : int (default=None)
-        Size of train dataset.
+        Positive number of groups in each training dataset, or None to infer it.
     n_splits : int (default=None)
-        Number of the splits.
+        Positive number of splits, or None to infer it.
     gap_size : int (default=0)
-        Gap size between train and test datasets.
+        Non-negative number of groups between train and test datasets.
     shift_size : int (default=1)
-        Step to shift for the next fold.
+        Positive number of groups to shift for the next fold.
     window_type : str (default="rolling")
         Type of the window. Possible values: "rolling", "expanding".
 
@@ -56,12 +56,29 @@ class GroupTimeSeriesSplit:
         if (train_size is not None) and (window_type == "expanding"):
             raise ValueError("Train size can be specified only with rolling window")
 
+        test_size = self._validate_size("test_size", test_size)
+        train_size = self._validate_size("train_size", train_size, allow_none=True)
+        n_splits = self._validate_size("n_splits", n_splits, allow_none=True)
+        gap_size = self._validate_size("gap_size", gap_size, minimum=0)
+        shift_size = self._validate_size("shift_size", shift_size)
+
         self.test_size = test_size
         self.train_size = train_size
         self.n_splits = n_splits
         self.gap_size = gap_size
         self.shift_size = shift_size
         self.window_type = window_type
+
+    @staticmethod
+    def _validate_size(name, value, minimum=1, allow_none=False):
+        if value is None and allow_none:
+            return None
+        if not isinstance(value, (int, np.integer)) or value < minimum:
+            requirement = "positive" if minimum else "non-negative"
+            raise ValueError(f"{name} must be a {requirement} integer")
+        # Python integers also prevent wraparound during window arithmetic
+        # when a caller supplies large signed or unsigned NumPy integers.
+        return int(value)
 
     def split(self, X, y=None, groups=None):
         """Generate indices to split data into training and test set.
