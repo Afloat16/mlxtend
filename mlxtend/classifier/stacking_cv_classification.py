@@ -12,6 +12,7 @@
 import numpy as np
 from scipy import sparse
 from sklearn import __version__ as sklearn_version
+from sklearn import get_config
 from sklearn.base import TransformerMixin, clone
 from sklearn.model_selection import cross_val_predict
 from sklearn.model_selection._split import check_cv
@@ -206,13 +207,16 @@ class StackingCVClassifier(
 
         groups : numpy array/None, shape = [n_samples]
             The group that each sample belongs to. This is used by specific
-            folding strategies such as GroupKFold()
+            folding strategies such as GroupKFold(). Groups are also passed
+            to the splitter when scikit-learn metadata routing is enabled.
 
         sample_weight : array-like, shape = [n_samples], optional
             Sample weights passed as sample_weights to each regressor
             in the regressors list as well as the meta_regressor.
             Raises error if some regressor does not support
             sample_weight in the fit() method.
+            With metadata routing enabled, base estimators must request
+            sample_weight for fitting during cross-validation.
 
         Returns
         -------
@@ -253,6 +257,15 @@ class StackingCVClassifier(
         else:
             fit_params = dict(sample_weight=sample_weight)
 
+        cv_groups = groups
+        if get_config().get("enable_metadata_routing", False) and groups is not None:
+            # Routing-enabled cross-validation receives splitter metadata in
+            # params alongside estimator metadata, rather than through groups.
+            if fit_params is None:
+                fit_params = {}
+            fit_params["groups"] = groups
+            cv_groups = None
+
         meta_features = None
 
         for n, model in enumerate(self.clfs_):
@@ -275,7 +288,7 @@ class StackingCVClassifier(
                 model,
                 X,
                 y,
-                groups=groups,
+                groups=cv_groups,
                 cv=final_cv,
                 n_jobs=self.n_jobs,
                 **{param_name: fit_params},
