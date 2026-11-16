@@ -55,7 +55,8 @@ def ecdf(
     percentile_count : Number of if percentile is not None
         Number of samples that have a feature less or equal than
         the feature threshold at a percentile threshold
-        or None if `percentile=None`
+        or None if `percentile=None`. Includes every sample tied at
+        the returned threshold.
 
     Examples
     -----------
@@ -76,7 +77,7 @@ def ecdf(
     if percentile:
         targets = x[y <= percentile]
         percentile_threshold = targets.max()
-        percentile_count = targets.shape[0]
+        percentile_count = int(np.count_nonzero(x <= percentile_threshold))
         ax.axvline(
             percentile_threshold, color=percentile_color, linestyle=percentile_linestyle
         )
