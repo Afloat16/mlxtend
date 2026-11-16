@@ -99,7 +99,10 @@ def hmine(
         itemsets = df.values
     if is_sparse:
         is_sparse
-    single_items = np.array(df.columns)
+    # Columns with equal labels are still distinct positional features.
+    # Apply labels only after mining so they cannot collide in the support map.
+    single_items = np.arange(len(df.columns))
+    colname_map = dict(enumerate(df.columns))
     itemsets_shape = itemsets.shape[0]
     itemsets, single_items, single_items_support = itemset_optimisation(
         itemsets, single_items, minsup
@@ -122,15 +125,15 @@ def hmine(
             verbose,
             single_items,
             frequent_itemsets,
+            colname_map,
         )
     # Convert the dictionary to a DataFrame
     res_df = pd.DataFrame([frequent_itemsets.values(), frequent_itemsets.keys()]).T
     res_df.columns = ["support", "itemsets"]
 
-    if not use_colnames:
-        mapping = {item: idx for idx, item in enumerate(df.columns)}
+    if use_colnames:
         res_df["itemsets"] = res_df["itemsets"].apply(
-            lambda x: frozenset([mapping[i] for i in x])
+            lambda x: frozenset([colname_map[i] for i in x])
         )
 
     return res_df
@@ -176,6 +179,7 @@ def hmine_driver(
     verbose: int,
     single_items: np.array,
     frequent_itemsets: dict,
+    colname_map: dict = None,
 ) -> dict:
     """
     Driver function for the hmine algorithm.
@@ -194,6 +198,7 @@ def hmine_driver(
         max_len (int): maximum length of frequent itemsets
         verbose (int): verbose mode
         frequent_itemsets (dict): dictionary of frequent itemsets
+        colname_map (dict): optional input labels for verbose output only
 
     Returns:
         frequent_itemsets(dict): dictionary of frequent itemsets
@@ -207,8 +212,11 @@ def hmine_driver(
     suffixes = suffixes[np.nonzero(suffixes > item[-1])[0]]
 
     if verbose:
+        labels = [
+            colname_map[i] if colname_map is not None else i for i in single_items[item]
+        ]
         print(
-            f"{len(suffixes)} itemset(s) from the suffixes on item(s) ({', '.join(single_items[item])})"
+            f"{len(suffixes)} itemset(s) from the suffixes on item(s) ({', '.join(map(str, labels))})"
         )
     for suffix in suffixes:
         new_item = item.copy()
@@ -225,6 +233,7 @@ def hmine_driver(
             verbose,
             single_items,
             frequent_itemsets,
+            colname_map,
         )
     return frequent_itemsets
 
