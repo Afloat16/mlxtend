@@ -56,9 +56,11 @@ def enrichment_plot(
     count_label : str (default: 'Count')
         Label for the "Count"-axis.
     xlim : 'auto' or array-like [min, max] (default: 'auto')
-        Min and maximum position of the x-axis range.
+        Min and maximum position of the value-axis range (horizontal unless
+        invert_axes is True).
     ylim : 'auto' or array-like [min, max] (default: 'auto')
-        Min and maximum position of the y-axis range.
+        Min and maximum position of the count-axis range (vertical unless
+        invert_axes is True).
     invert_axes : bool (default: False)
         Plots count on the x-axis if True.
     legend_loc : str (default: 'best')
@@ -112,31 +114,31 @@ def enrichment_plot(
             linestyle=next(linestyle_gen),
         )
 
-    if invert_axes:
-        ax.set_ylim, ax.set_xlim = ax.set_xlim, ax.set_ylim
+    set_count_lim = ax.set_xlim if invert_axes else ax.set_ylim
+    set_value_lim = ax.set_ylim if invert_axes else ax.set_xlim
 
     if ylim == "auto":
-        ax.set_ylim([np.min(y_data) - 1, np.max(y_data) + 1])
+        set_count_lim([np.min(y_data) - 1, np.max(y_data) + 1])
     else:
-        ax.set_ylim(ylim)
+        set_count_lim(ylim)
 
     if xlim == "auto":
         df_min, df_max = np.min(x_data.min()), np.max(x_data.max())
-        ax.set_xlim([df_min - 1, df_max + 1])
+        set_value_lim([df_min - 1, df_max + 1])
 
     else:
-        ax.set_xlim(xlim)
+        set_value_lim(xlim)
 
     if legend_loc:
-        plt.legend(loc=legend_loc, scatterpoints=1)
+        ax.legend(loc=legend_loc, scatterpoints=1)
 
     if grid:
-        plt.grid()
+        ax.grid()
 
     if count_label:
         if invert_axes:
-            plt.xlabel(count_label)
+            ax.set_xlabel(count_label)
         else:
-            plt.ylabel(count_label)
+            ax.set_ylabel(count_label)
 
     return ax
