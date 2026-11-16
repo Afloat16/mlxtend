@@ -81,6 +81,8 @@ def plot_pca_correlation_graph(
         If not provided, the function computes PCA automatically using
         mlxtend.feature_extraction.PrincipalComponentAnalysis
         Expected `n_componentes >= max(dimensions)`
+        Only the first `max(dimensions)` components are used in the
+        returned correlation table, as with automatically computed PCA.
 
     explained_variance : 1 dimension np.ndarray, length = n_components
         Optional.
@@ -149,7 +151,10 @@ def plot_pca_correlation_graph(
         )
 
     corrs = create_correlation_table(
-        X_pca, X, ["Dim " + str(i + 1) for i in range(n_comp)], variables_names
+        X_pca[:, :n_comp],
+        X,
+        ["Dim " + str(i + 1) for i in range(n_comp)],
+        variables_names,
     )
     tot = sum(X.var(0)) * X.shape[0] / (X.shape[0] - 1)
     explained_var_ratio = [(i / tot) * 100 for i in explained_variance]
