@@ -16,7 +16,7 @@ class _Regressor(object):
         pass
 
     def _check_target_array(self, y, allowed=None):
-        if not isinstance(y[0], (float, np.float64)):
+        if not isinstance(y[0], (float, np.floating)):
             raise AttributeError("y must be a float array.\nFound %s" % y.dtype)
 
     def fit(self, X, y, init_params=True):
