@@ -17,7 +17,7 @@ The CHANGELOG for the current development version is available at
 
 ##### Changes
 
-- Fixed FP-Growth pruning valid frequent itemsets with `null_values=True`. Candidate pruning now uses a conservative count bound, while final support still excludes missing observations per itemset. Association rules recover missing subset supports from the original data in this mode.
+- Fixed FP-Growth pruning valid frequent itemsets with `null_values=True`. Candidate pruning now uses a conservative count bound, while final support still excludes missing observations per itemset. Association rules recover missing subset supports from the original data in this mode. The conservative candidate bound is limited to FP-Growth, preserving FPmax's existing pruning.
 
 - Fixed `tokenizer_words_and_emoticons` joining the first emoticon to the final word when the input ends in a word ([#1206](https://github.com/rasbt/mlxtend/issues/1206) via [Afloat16](https://github.com/Afloat16)).
 

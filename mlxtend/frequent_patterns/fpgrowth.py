@@ -91,7 +91,9 @@ def fpgrowth(
     if use_colnames:
         colname_map = {idx: item for idx, item in enumerate(df.columns)}
 
-    tree, disabled, _ = fpc.setup_fptree(df, min_support, null_values=null_values)
+    tree, disabled, _ = fpc.setup_fptree(
+        df, min_support, null_values=null_values, conservative_null_support=True
+    )
     minsup = math.ceil(min_support * len(df.index))  # min support as count
     if null_values:
         complete_rows = int((disabled != 1).all(axis=1).sum())

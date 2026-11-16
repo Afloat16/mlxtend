@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from mlxtend.frequent_patterns import association_rules, fpgrowth
+from mlxtend.frequent_patterns import association_rules, fpgrowth, fpmax
 
 
 def exhaustive_supports(frame, threshold, use_colnames=False, max_len=None):
@@ -71,6 +71,24 @@ def test_fully_observed_data_keeps_the_existing_result(threshold):
 def test_all_missing_columns_have_no_frequent_itemsets():
     frame = pd.DataFrame(np.full((3, 2), np.nan))
     assert actual_supports(frame, 0.5) == {}
+
+
+@pytest.mark.parametrize("use_colnames", [False, True])
+@pytest.mark.parametrize("reverse_columns", [False, True])
+def test_fpgrowth_candidate_bound_does_not_change_fpmax(use_colnames, reverse_columns):
+    values = np.array([[0.0, 0.0], [0.0, 1.0], [1.0, np.nan]])
+    if reverse_columns:
+        values = values[:, ::-1]
+    frame = pd.DataFrame(values, columns=["A", "B"])
+    result = fpmax(frame, min_support=0.5, null_values=True, use_colnames=use_colnames)
+    # Only the item observed present once among two nonmissing rows is
+    # frequent. Adding the infrequent item to FPmax's candidate tree can
+    # suppress this maximal singleton before final support filtering.
+    index = 0 if reverse_columns else 1
+    item = frame.columns[index] if use_colnames else index
+    assert {row.itemsets: row.support for row in result.itertuples()} == {
+        frozenset([item]): 0.5
+    }
 
 
 def test_maximum_length_remains_a_search_bound():

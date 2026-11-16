@@ -8,7 +8,7 @@ from pandas import __version__ as pandas_version
 warnings.simplefilter("always", DeprecationWarning)
 
 
-def setup_fptree(df, min_support, null_values=False):
+def setup_fptree(df, min_support, null_values=False, conservative_null_support=False):
     num_itemsets = len(df.index)  # number of itemsets in the database
 
     is_sparse = False
@@ -31,11 +31,15 @@ def setup_fptree(df, min_support, null_values=False):
         disabled = np.where(pd.isna(disabled), 1, np.nan) + np.where(
             (disabled == 0) | (disabled == 1), np.nan, 0
         )
-        # A superset can exclude more missing rows and have higher support
-        # than a subset. Every itemset still includes all globally complete
-        # rows in its denominator, so this optimistic bound is safe to prune.
-        complete_rows = np.count_nonzero((disabled != 1).all(axis=1))
-        item_support = np.array(np.nansum(df.values, axis=0) / max(complete_rows, 1))
+        if conservative_null_support:
+            # FP-Growth filters each candidate using its observed rows.
+            # Keep this bound opt-in: FPmax's maximal-set pruning does not
+            # support additional infrequent candidates in its initial tree.
+            complete_rows = np.count_nonzero((disabled != 1).all(axis=1))
+            denominator = max(complete_rows, 1)
+        else:
+            denominator = float(num_itemsets) - np.nansum(disabled, axis=0)
+        item_support = np.array(np.nansum(df.values, axis=0) / denominator)
     else:
         item_support = np.array(np.sum(df.values, axis=0) / float(num_itemsets))
     item_support = item_support.reshape(-1)
