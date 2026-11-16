@@ -81,6 +81,13 @@ def feature_importance_permutation(
     if metric == "r2":
 
         def score_func(y_true, y_pred):
+            y_true = np.asarray(y_true)
+            y_pred = np.asarray(y_pred)
+            # Integer subtraction/squaring can overflow, and narrow floats
+            # can overflow even when the R-squared ratio is finite.
+            dtype = np.result_type(y_true.dtype, y_pred.dtype, np.float64)
+            y_true = y_true.astype(dtype, copy=False)
+            y_pred = y_pred.astype(dtype, copy=False)
             sum_of_squares = np.sum(np.square(y_true - y_pred))
             res_sum_of_squares = np.sum(np.square(y_true - y_true.mean()))
             r2_score = 1.0 - (sum_of_squares / res_sum_of_squares)
