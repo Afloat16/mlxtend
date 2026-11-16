@@ -118,8 +118,9 @@ def bootstrap_point632_score(
         the random number generator.
 
     clone_estimator : bool (default=True)
-        Clones the estimator if true, otherwise fits
-        the original.
+        Uses a fresh clone of the estimator for each bootstrap replicate
+        if true, so fitted state cannot carry between samples. Otherwise
+        repeatedly fits the original estimator.
 
     fit_params : additional parameters
         Additional parameters to be passed to the .fit() function of the
@@ -212,6 +213,11 @@ def bootstrap_point632_score(
     cnt = 0
 
     for train, test in oob.split(X):
+        if clone_estimator and cnt:
+            cloned_est = clone(estimator)
+            predict_func = (
+                cloned_est.predict_proba if predict_proba else cloned_est.predict
+            )
         cloned_est.fit(X[train], y[train], **fit_params)
 
         # get the prediction probability
