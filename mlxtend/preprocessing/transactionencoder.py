@@ -5,7 +5,8 @@
 # License: BSD 3 clause
 
 import numpy as np
-from scipy.sparse import csr_matrix
+import pandas as pd
+from scipy.sparse import csr_matrix, issparse
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils.validation import _check_feature_names_in, check_is_fitted
 
@@ -131,14 +132,17 @@ class TransactionEncoder(BaseEstimator, TransformerMixin):
         return array
 
     def inverse_transform(self, array):
-        """Transforms an encoded NumPy array back into transactions.
+        """Transform encoded arrays or DataFrames back into transactions.
 
         Parameters
         ------------
-        array : NumPy array [n_transactions, n_unique_items]
-            The NumPy one-hot encoded boolean array of the input transactions,
-            where the columns represent the unique items found in the input
-            array in alphabetic order
+        array : NumPy array, scipy sparse matrix/array, or pandas DataFrame
+            One-hot encoded boolean values with shape
+            [n_transactions, n_unique_items]. Array columns correspond to
+            `self.columns_` in order. DataFrame columns must contain each
+            fitted item exactly once and may appear in any order.
+            Sparse matrices/arrays and zero-filled sparse DataFrames are
+            decoded without converting to a dense array.
 
             For example,
             ```
@@ -174,6 +178,37 @@ class TransactionEncoder(BaseEstimator, TransformerMixin):
           ```
 
         """
+        if isinstance(array, pd.DataFrame):
+            if not array.columns.is_unique or len(array.columns) != len(self.columns_):
+                raise ValueError(
+                    "DataFrame columns must match the fitted items exactly."
+                )
+            column_indices = array.columns.get_indexer(self.columns_)
+            if (column_indices < 0).any():
+                raise ValueError(
+                    "DataFrame columns must match the fitted items exactly."
+                )
+            array = array.iloc[:, column_indices]
+            if len(array.columns) and all(
+                isinstance(dtype, pd.SparseDtype) and dtype.fill_value == 0
+                for dtype in array.dtypes
+            ):
+                array = array.sparse.to_coo()
+            else:
+                array = array.to_numpy()
+
+        if issparse(array):
+            # Normalize a copy so duplicate coordinates and stored zeros agree
+            # with the logical array, without changing the caller's buffers.
+            array = array.tocsr(copy=True)
+            array.sum_duplicates()
+            array.eliminate_zeros()
+            array.sort_indices()
+            return [
+                [self.columns_[idx] for idx in array.indices[start:end]]
+                for start, end in zip(array.indptr[:-1], array.indptr[1:])
+            ]
+
         return [
             [self.columns_[idx] for idx, cell in enumerate(row) if cell]
             for row in array
