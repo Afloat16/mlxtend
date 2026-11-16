@@ -21,6 +21,28 @@ class _BaseStackingClassifier(ClassifierMixin):
         except Exception:
             return {"estimator_type": "classifier"}
 
+    def _encode_meta_predictions(self, prediction):
+        """Encode nonnumeric predictions using the fitted class vocabulary."""
+        prediction = np.asarray(prediction)
+        if prediction.dtype.kind not in "OUS":
+            return prediction
+        if isinstance(self._label_encoder, list):
+            return np.column_stack(
+                [
+                    (
+                        prediction[:, column]
+                        if encoder.classes_.dtype.kind in "biufc"
+                        else encoder.transform(prediction[:, column])
+                    )
+                    for column, encoder in enumerate(self._label_encoder)
+                ]
+            )
+        if self._label_encoder.classes_.dtype.kind in "biufc":
+            return prediction
+        return self._label_encoder.transform(prediction.ravel()).reshape(
+            prediction.shape
+        )
+
     def _do_predict(self, X, predict_fn):
         meta_features = self.predict_meta_features(X)
 

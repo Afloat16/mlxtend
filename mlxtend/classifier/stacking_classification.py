@@ -39,6 +39,9 @@ class StackingClassifier(_BaseXComposition, _BaseStackingClassifier, Transformer
     use_probas : bool (default: False)
         If True, trains meta-classifier based on predicted probabilities
         instead of class labels.
+        Otherwise, string/object predictions are encoded using the fitted
+        class vocabulary; numeric predictions retain their original values.
+        Final predictions still use the original target labels.
     drop_proba_col : string (default: None)
         Drops extra "probability" column in the feature set, because it is
         redundant:
@@ -277,5 +280,7 @@ class StackingClassifier(_BaseXComposition, _BaseStackingClassifier, Transformer
             else:
                 vals = np.concatenate(probas, axis=1)
         else:
-            vals = np.column_stack([clf.predict(X) for clf in self.clfs_])
+            vals = np.column_stack(
+                [self._encode_meta_predictions(clf.predict(X)) for clf in self.clfs_]
+            )
         return vals

@@ -45,6 +45,9 @@ class StackingCVClassifier(
     use_probas : bool (default: False)
         If True, trains meta-classifier based on predicted probabilities
         instead of class labels.
+        Otherwise, string/object predictions are encoded using the fitted
+        class vocabulary; numeric predictions retain their original values.
+        Final predictions still use the original target labels.
     drop_proba_col : string (default: None)
         Drops extra "probability" column in the feature set, because it is
         redundant:
@@ -285,7 +288,7 @@ class StackingCVClassifier(
             )
 
             if not self.use_probas:
-                prediction = prediction[:, np.newaxis]
+                prediction = self._encode_meta_predictions(prediction)[:, np.newaxis]
             elif self.drop_proba_col == "last":
                 prediction = prediction[:, :-1]
             elif self.drop_proba_col == "first":
@@ -354,7 +357,9 @@ class StackingCVClassifier(
 
         for model in self.clfs_:
             if not self.use_probas:
-                prediction = model.predict(X)[:, np.newaxis]
+                prediction = self._encode_meta_predictions(model.predict(X))[
+                    :, np.newaxis
+                ]
             else:
                 if self.drop_proba_col == "last":
                     prediction = model.predict_proba(X)[:, :-1]
