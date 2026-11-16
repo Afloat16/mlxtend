@@ -61,6 +61,11 @@ class SoftmaxRegression(_BaseModel, _IterativeModel, _Classifier, _MultiClass):
     b_ : 1d-array, shape={1,}
       Bias unit after fitting.
 
+    classes_ : 1d-array, shape={n_outputs,}
+      Integer class labels from 0 to the fitted output width minus one, in
+      the order of the columns returned by `predict_proba`. Includes outputs
+      for labels absent from a partial training set.
+
     cost_ : list
         List of floats, the average cross_entropy for each epoch.
 
@@ -141,6 +146,7 @@ class SoftmaxRegression(_BaseModel, _IterativeModel, _Classifier, _MultiClass):
             )
             self.cost_ = []
 
+        self.classes_ = np.arange(self.w_.shape[1])
         y_enc = self._one_hot(y=y, n_labels=self.n_classes, dtype=np.float64)
 
         self.init_time_ = time()

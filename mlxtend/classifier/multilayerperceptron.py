@@ -67,6 +67,10 @@ class MultiLayerPerceptron(
         Weights after fitting.
     b_ : 1D-array, shape=[n_classes]
         Bias units after fitting.
+    classes_ : 1D-array, shape=[n_outputs]
+      Integer class labels from 0 to the fitted output width minus one, in
+      the order of the columns returned by `predict_proba`. Includes outputs
+      for labels absent from a partial training set.
     cost_ : list
         List of floats; the mean categorical cross entropy
         cost after each epoch.
@@ -143,6 +147,7 @@ class MultiLayerPerceptron(
                 prev_grad_b_out = np.zeros(shape=self.b_["out"].shape)
                 prev_grad_w_out = np.zeros(shape=self.w_["out"].shape)
 
+        self.classes_ = np.arange(self.w_["out"].shape[1])
         y_enc = self._one_hot(y=y, n_labels=self.n_classes, dtype=np.float64)
 
         self.init_time_ = time()
