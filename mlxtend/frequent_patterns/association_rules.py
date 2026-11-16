@@ -293,50 +293,27 @@ def association_rules(
                             disAC, disA, disC, dis_int, dis_int_ = 0, 0, 0, 0, 0
 
                         else:
+                            # Count transactions using positional masks. The disabled
+                            # frame has a RangeIndex, while df_orig may have arbitrary
+                            # or repeated row labels.
                             an = list(antecedent)
                             con = list(consequent)
-                            an.extend(con)
+                            missing_an = (
+                                disabled.loc[:, an].eq(1).any(axis=1).to_numpy()
+                            )
+                            missing_con = (
+                                disabled.loc[:, con].eq(1).any(axis=1).to_numpy()
+                            )
+                            present_an = df_orig.loc[:, an].eq(1).all(axis=1).to_numpy()
+                            present_con = (
+                                df_orig.loc[:, con].eq(1).all(axis=1).to_numpy()
+                            )
 
-                            # select data of antecedent, consequent and combined from disabled
-                            dec = disabled.loc[:, an]
-                            _dec = disabled.loc[:, list(antecedent)]
-                            __dec = disabled.loc[:, list(consequent)]
-
-                            # select data of antecedent and consequent from original
-                            dec_ = df_orig.loc[:, list(antecedent)]
-                            dec__ = df_orig.loc[:, list(consequent)]
-
-                            # disabled counts
-                            disAC, disA, disC, dis_int, dis_int_ = 0, 0, 0, 0, 0
-                            for i in range(len(dec.index)):
-                                # select the i-th iset from the disabled dataset
-                                item_comb = list(dec.iloc[i, :])
-                                item_dis_an = list(_dec.iloc[i, :])
-                                item_dis_con = list(__dec.iloc[i, :])
-
-                                # select the i-th iset from the original dataset
-                                item_or_an = list(dec_.iloc[i, :])
-                                item_or_con = list(dec__.iloc[i, :])
-
-                                # check and keep count if there is a null value in combined, antecedent, consequent
-                                if 1 in set(item_comb):
-                                    disAC += 1
-                                if 1 in set(item_dis_an):
-                                    disA += 1
-                                if 1 in item_dis_con:
-                                    disC += 1
-
-                                # check and keep count if there is a null value in consequent AND all items are present in antecedent
-                                if (1 in item_dis_con) and all(
-                                    j == 1 for j in item_or_an
-                                ):
-                                    dis_int += 1
-
-                                # check and keep count if there is a null value in antecedent AND all items are present in consequent
-                                if (1 in item_dis_an) and all(
-                                    j == 1 for j in item_or_con
-                                ):
-                                    dis_int_ += 1
+                            disAC = np.count_nonzero(missing_an | missing_con)
+                            disA = np.count_nonzero(missing_an)
+                            disC = np.count_nonzero(missing_con)
+                            dis_int = np.count_nonzero(missing_con & present_an)
+                            dis_int_ = np.count_nonzero(missing_an & present_con)
 
                     except KeyError as e:
                         s = (
