@@ -160,9 +160,14 @@ def permutation_test(
             num_rounds = 2**n
 
         else:
+            mask_y = np.ones(m + n, dtype=bool)
             for indices_x in combinations(range(m + n), m):
-                indices_y = [i for i in range(m + n) if i not in indices_x]
-                diff = func(combined[list(indices_x)], combined[indices_y])
+                indices_x = list(indices_x)
+                # Reuse a linear-size mask instead of searching the selected
+                # index tuple separately for every observation.
+                mask_y.fill(True)
+                mask_y[indices_x] = False
+                diff = func(combined[indices_x], combined[mask_y])
 
                 if diff > reference_stat or np.isclose(diff, reference_stat):
                     at_least_as_extreme += 1.0
