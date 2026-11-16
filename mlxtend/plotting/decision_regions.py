@@ -276,19 +276,11 @@ def plot_decision_regions(
             cpus = mp.cpu_count()
         else:
             cpus = n_jobs
-        pool = mp.Pool(cpus)
-        partQuant = len(X_predict) / cpus
-        partitions = []
-        for n in range(cpus - 1):
-            start, end = (
-                np.floor(partQuant * n).astype(int),
-                np.floor(partQuant * (n + 1)).astype(int),
-            )
-            partitions.append(X_predict[start:end])
-        partitions.append(X_predict[end:])
+        cpus = min(cpus, len(X_predict))
+        partitions = np.array_split(X_predict, cpus)
         xtype = X.dtype
-        Z = pool.starmap(parallel, [(x, clf, xtype) for x in partitions])
-        pool.close()
+        with mp.Pool(cpus) as pool:
+            Z = pool.starmap(parallel, [(x, clf, xtype) for x in partitions])
         Z = np.concatenate(Z)
         Z = Z.reshape(xx.shape)
     Z_indexed = np.vectorize(label_to_index.get)(Z)
